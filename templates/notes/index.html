@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Список нотаток</title>
+  <link rel="stylesheet" href="{% static 'notes/style.css' %}">
+</head>
+<body>
+  <div class="container">
+    <h1>Мої нотатки</h1>
+
+    <div class="note-form">
+      <form method="POST">
+        {% csrf_token %}
+        <div class="field-group">
+          <input type="text" name="title" placeholder="Заголовок..." required>
+        </div>
+
+        <div class="field-group">
+          <textarea name="text" rows="6" placeholder="Основний текст..." required></textarea>
+        </div>
+
+        <div class="field-group">
+          <textarea name="note_footer" rows="3" placeholder="Примітка (необовʼязково)"></textarea>
+        </div>
+
+        <button type="submit">Додати нотатку</button>
+      </form>
+    </div>
+
+    <hr>
+
+    <div class="note-list">
+      {% for note in notes %}
+        <div class="note-block">
+          <h2>{{ note.title }}</h2>
+          <p>{{ note.text|linebreaks }}</p>
+
+          {% if note.note_footer %}
+            <p class="footer"><em>{{ note.note_footer }}</em></p>
+          {% endif %}
+
+          <div class="actions">
+            <a href="{% url 'edit_note' note.pk %}">Редагувати</a>
+            |
+            <a href="{% url 'delete_note' note.pk %}">Видалити</a>
+          </div>
+        </div>
+      {% empty %}
+        <p>Немає нотаток.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Підключення jQuery і власного скрипта -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="{% static 'notes/scripts.js' %}"></script>
+</body>
+</html>

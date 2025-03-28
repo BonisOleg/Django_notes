@@ -16,8 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from notes import views  # ← імпортуємо напряму
 
 urlpatterns = [
+    path('', views.main_home, name='main_home'),  # ← головна сторінка "/"
+    path('notes/', include('notes.urls')),
     path('admin/', admin.site.urls),
-    path('notes/', include('notes.urls')),  # Підключаємо маршрути додатку
 ]

@@ -1,56 +1,123 @@
-<!-- templates/notes/home.html -->
-
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>Notes — Головна</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: "Segoe UI", sans-serif;
-            background: linear-gradient(120deg, #89f7fe, #66a6ff);
-            color: #fff;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            justify-content: center;
-            align-items: center;
-        }
+  <meta charset="UTF-8">
+  <title>Ласкаво просимо в Notes!</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Segoe UI', sans-serif;
+      background: #7fd3ed;
+      overflow: hidden;
+      position: relative;
+    }
 
-        h1 {
-            font-size: 48px;
-            margin-bottom: 10px;
-        }
+    .content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: #fff;
+      z-index: 2;
+    }
 
-        p {
-            font-size: 20px;
-            color: #f0f0f0;
-        }
+    h1 {
+      font-size: 48px;
+      margin-bottom: 15px;
+      text-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
 
-        .button {
-            margin-top: 30px;
-            padding: 12px 30px;
-            font-size: 16px;
-            color: #fff;
-            background-color: rgba(255, 255, 255, 0.2);
-            border: 2px solid #fff;
-            border-radius: 8px;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
+    p {
+      font-size: 18px;
+      margin-bottom: 35px;
+      opacity: 0.95;
+    }
 
-        .button:hover {
-            background-color: #fff;
-            color: #66a6ff;
-        }
-    </style>
+    .button {
+      background-color: #ffffff;
+      color: #0077aa;
+      border: none;
+      padding: 14px 34px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 10px;
+      text-decoration: none;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      transition: all 0.3s ease;
+      margin-top: 20px; /* чуть ниже */
+    }
+
+    .button:hover {
+      background-color: #0077aa;
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.25);
+    }
+
+    .circle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 1;
+      z-index: 1;
+      background: radial-gradient(circle, rgba(255,255,255,0.5), rgba(255,255,255,0));
+      filter: blur(6px);
+    }
+  </style>
 </head>
 <body>
+
+  <div class="content">
     <h1>Ласкаво просимо до Notes!</h1>
-    <p>Ваш особистий простір для зберігання ідей, думок та планів.</p>
+    <p>Ваш особистий простір для збереження ідей.</p>
     <a href="#" class="button">Створити нову нотатку</a>
+  </div>
+
+  <script>
+    const circles = [];
+
+    for (let i = 0; i < 10; i++) {
+      const circle = document.createElement('div');
+      circle.className = 'circle';
+
+      const size = Math.random() * 120 + 100;
+      circle.style.width = size + 'px';
+      circle.style.height = size + 'px';
+      circle.style.top = Math.random() * window.innerHeight + 'px';
+      circle.style.left = Math.random() * window.innerWidth + 'px';
+
+      document.body.appendChild(circle);
+
+      circles.push({
+        el: circle,
+        x: parseFloat(circle.style.left),
+        y: parseFloat(circle.style.top),
+        dx: (Math.random() * 0.15 + 0.05) * (Math.random() > 0.5 ? 1 : -1),
+        dy: (Math.random() * 0.15 + 0.05) * (Math.random() > 0.5 ? 1 : -1)
+      });
+    }
+
+    function animate() {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+
+      circles.forEach(c => {
+        c.x += c.dx;
+        c.y += c.dy;
+
+        if (c.x < -200 || c.x > w + 200) c.dx *= -1;
+        if (c.y < -200 || c.y > h + 200) c.dy *= -1;
+
+        c.el.style.left = c.x + 'px';
+        c.el.style.top = c.y + 'px';
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  </script>
 </body>
 </html>

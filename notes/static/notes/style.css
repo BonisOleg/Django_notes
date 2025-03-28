@@ -1,0 +1,136 @@
+/* Фон з анімованим градієнтом */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: linear-gradient(-45deg, #f8b500, #fceabb, #f8b500, #fceabb);
+  background-size: 400% 400%;
+  animation: gradientFlow 15s ease infinite;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.container {
+  width: 90%;
+  max-width: 900px;
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: 30px;
+  font-size: 30px;
+  color: #2c3e50;
+}
+
+.note-form form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  justify-items: stretch;
+  align-items: start;
+  margin-bottom: 30px;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.field-group input[type="text"],
+.field-group textarea {
+  padding: 16px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  resize: none;
+  transition: 0.3s;
+  background: #fcfcfc;
+}
+
+.field-group input::placeholder,
+.field-group textarea::placeholder {
+  color: #aaa;
+}
+
+.field-group input:focus,
+.field-group textarea:focus {
+  border-color: #f39c12;
+  outline: none;
+  box-shadow: 0 0 6px rgba(243, 156, 18, 0.4);
+}
+
+.note-form button {
+  grid-column: span 2;
+  justify-self: center;
+  padding: 14px 28px;
+  background: #e67e22;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+}
+
+.note-form button:hover {
+  background: #d35400;
+  transform: scale(1.05);
+}
+
+.note-list {
+  text-align: left;
+}
+
+.note-block {
+  background: #fdfdfd;
+  border-left: 5px solid #f39c12;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+
+.note-block h2 {
+  margin-top: 0;
+  color: #2c3e50;
+}
+
+.footer {
+  margin-top: 10px;
+  font-style: italic;
+  color: #7f8c8d;
+  border-top: 1px dashed #ccc;
+  padding-top: 8px;
+}
+
+.actions {
+  margin-top: 10px;
+  font-size: 14px;
+  text-align: right;
+}
+
+.actions a {
+  color: #e67e22;
+  text-decoration: none;
+  margin-left: 10px;
+  font-weight: 500;
+}
+
+.actions a:hover {
+  text-decoration: underline;
+}
