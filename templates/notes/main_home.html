@@ -1,9 +1,9 @@
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-  <meta charset="UTF-8">
-  <title>Notes — Простір ідей</title>
-  <style>
+{% extends 'notes/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
     html, body {
       margin: 0;
       padding: 0;
@@ -56,16 +56,14 @@
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
       transition: background 1s;
     }
-  </style>
-</head>
-<body>
+</style>
 
-  <div class="content">
+<div class="content">
     <h1>Ласкаво просимо до простору ідей</h1>
     <a class="button" href="/notes/">Увійти до нотаток</a>
-  </div>
+</div>
 
-  <script>
+<script>
     const colors = [
       ['#ff6b6b', '#c0392b'],
       ['#4ecdc4', '#2c3e50'],
@@ -124,6 +122,6 @@
     }
 
     animate();
-  </script>
-</body>
-</html>
+</script>
+
+{% endblock %}

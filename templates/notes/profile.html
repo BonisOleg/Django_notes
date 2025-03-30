@@ -1,0 +1,6 @@
+{% extends 'notes/base.html' %}
+{% block content %}
+  <h1>Привіт, {{ user.username }}!</h1>
+  <p>Це твій особистий кабінет.</p>
+  <a href="{% url 'logout' %}">Вийти</a>
+{% endblock %}

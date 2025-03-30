@@ -1,0 +1,10 @@
+{% extends 'notes/base.html' %}
+
+{% block content %}
+  <div class="container">
+    <h1>Вітаємо!</h1>
+    <p>Оберіть дію:</p>
+    <a href="{% url 'login' %}" class="btn">Увійти</a>
+    <a href="{% url 'register' %}" class="btn">Зареєструватися</a>
+  </div>
+{% endblock %}

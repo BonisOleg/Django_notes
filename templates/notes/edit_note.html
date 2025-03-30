@@ -1,11 +1,8 @@
+{% extends 'notes/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-  <meta charset="UTF-8">
-  <title>Редагування нотатки</title>
-  <link rel="stylesheet" href="{% static 'notes/style.css' %}">
-  <style>
+
+{% block content %}
+<style>
     body {
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(to right, #fceabb, #f8b500);
@@ -79,17 +76,15 @@
     .back-link:hover {
       text-decoration: underline;
     }
-  </style>
-</head>
-<body>
-  <div class="edit-container">
+</style>
+
+<div class="edit-container">
     <h1>Редагування нотатки</h1>
     <form method="POST">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit">Зберегти зміни</button>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Зберегти зміни</button>
     </form>
-    <a class="back-link" href="{% url 'home' %}">Повернутися до списку нотаток</a>
-  </div>
-</body>
-</html>
+    <a class="back-link" href="{% url 'note_list' %}">Повернутися до списку нотаток</a>
+</div>
+{% endblock %}

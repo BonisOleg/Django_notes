@@ -17,9 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from notes import views  # ← імпортуємо напряму
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('', views.main_home, name='main_home'),  # ← головна сторінка "/"
     path('notes/', include('notes.urls')),
     path('admin/', admin.site.urls),
+    path('logout/', auth_views.LogoutView.as_view(next_page='main_home'), name='logout'),
 ]
+

@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Мої нотатки</title>
+  <link rel="stylesheet" href="{% static 'notes/style.css' %}">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+  <!-- Навігаційне меню -->
+  <header>
+    <nav>
+      <ul class="menu">
+        <li><a href="{% url 'main_home' %}">Головна</a></li>
+        <li><a href="{% url 'note_list' %}">Додати нотатку</a></li>
+
+       {% if user.is_authenticated %}
+  <li>
+    <form action="{% url 'logout' %}" method="post" style="display: inline;">
+      {% csrf_token %}
+      <button type="submit" class="menu-btn-link">Вийти</button>
+    </form>
+  </li>
+{% else %}
+  <li><a href="{% url 'auth_choice' %}">Реєстрація/вхід</a></li>
+{% endif %}
+
+        <li><a href="{% url 'trash' %}">Корзина</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <script src="{% static 'notes/scripts.js' %}"></script>
+</body>
+</html>
