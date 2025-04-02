@@ -1,0 +1,8 @@
+{% extends 'notes/base.html' %}
+
+{% block content %}
+<div class="guest-container">
+  <h1>Щоб створювати нотатки — увійдіть або зареєструйтесь</h1>
+  <a href="{% url 'register' %}" class="btn large">Зареєструватися</a>
+</div>
+{% endblock %}

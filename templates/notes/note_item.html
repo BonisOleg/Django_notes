@@ -1,9 +1,15 @@
-<div class="note-block">
-  <h2>{{ note.title }}</h2>
+<div class="note-block" data-id="{{ note.pk }}" draggable="true">
+  <div class="note-header">
+    <h2>{{ note.title }}</h2>
+    <p class="created-at">{{ note.created_at|date:"d.m.Y H:i" }}</p>
+  </div>
+
   <p>{{ note.text|linebreaks }}</p>
+
   {% if note.note_footer %}
     <p class="footer"><em>{{ note.note_footer }}</em></p>
   {% endif %}
+
   <div class="actions">
     <a href="{% url 'edit_note' note.pk %}">Редагувати</a> |
     <a href="{% url 'delete_note' note.pk %}">Видалити</a>

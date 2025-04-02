@@ -1,5 +1,6 @@
 {% extends 'notes/base.html' %}
 {% load static %}
+{% load tz %}
 
 {% block head %}
   <title>Корзина нотаток</title>
@@ -12,35 +13,41 @@
   <div class="container">
     <h1>Корзина</h1>
 
-    <!-- Кнопки масових дій -->
-    <div class="actions">
-      <button class="btn restore-all">Відновити всі</button>
-      <button class="btn danger delete-all">Видалити всі назавжди</button>
-    </div>
+    {% if user.is_authenticated %}
+      <!-- Кнопки масових дій -->
+      <div class="actions">
+        <button class="btn restore-all">Відновити всі</button>
+        <button class="btn danger delete-all">Видалити всі назавжди</button>
+      </div>
 
-    <hr>
+      <hr>
 
-    <!-- Список видалених нотаток -->
-    <div class="note-list" id="trash-list">
-      {% for note in notes %}
-        <div class="note-block deleted" data-id="{{ note.pk }}" id="note-{{ note.pk }}">
-          <h2>{{ note.title }}</h2>
-          <p>{{ note.text|linebreaks }}</p>
+      <!-- Список видалених нотаток -->
+      <div class="note-list" id="trash-list">
+        {% for note in notes %}
+          <div class="note-block deleted" data-id="{{ note.pk }}" id="note-{{ note.pk }}">
+            <h2>{{ note.title }}</h2>
+            <p>{{ note.text|linebreaks }}</p>
 
-          {% if note.note_footer %}
-            <p class="footer"><em>{{ note.note_footer }}</em></p>
-          {% endif %}
+            {% if note.note_footer %}
+              <p class="footer"><em>{{ note.note_footer }}</em></p>
+            {% endif %}
 
-          <div class="actions">
-            <button class="btn small restore-note">Відновити</button>
-            <button class="btn small danger delete-note">Видалити назавжди</button>
+            <p class="footer small">Створено: {{ note.created_at|localtime|date:"d.m.Y H:i" }}</p>
+
+            <div class="actions">
+              <button class="btn small restore-note">Відновити</button>
+              <button class="btn small danger delete-note">Видалити назавжди</button>
+            </div>
           </div>
-        </div>
-      {% empty %}
-        <p>Корзина порожня.</p>
-      {% endfor %}
-    </div>
+        {% empty %}
+          <p>Корзина порожня.</p>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p style="text-align: center; margin-top: 40px; font-size: 18px;">Щоб переглядати корзину, будь ласка, <a href="{% url 'register' %}" class="btn">Зареєструйтесь</a> або <a href="{% url 'login' %}" class="btn">увійдіть</a>.</p>
+    {% endif %}
   </div>
 
   <script src="{% static 'notes/scripts.js' %}"></script>
-{% endblock %}%}
+{% endblock %}

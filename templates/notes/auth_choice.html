@@ -1,10 +1,11 @@
 {% extends 'notes/base.html' %}
-
 {% block content %}
-  <div class="container">
+  <div class="auth-choice-box">
     <h1>Вітаємо!</h1>
     <p>Оберіть дію:</p>
-    <a href="{% url 'login' %}" class="btn">Увійти</a>
-    <a href="{% url 'register' %}" class="btn">Зареєструватися</a>
+    <div class="auth-choice-buttons">
+      <a href="{% url 'login' %}" class="btn large">Увійти</a>
+      <a href="{% url 'register' %}" class="btn large">Зареєструватися</a>
+    </div>
   </div>
 {% endblock %}

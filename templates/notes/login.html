@@ -1,9 +1,21 @@
 {% extends 'notes/base.html' %}
-{% block content %}
-  <h1>Вхід</h1>
-  <form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Увійти</button>
-  </form>
+{% load static %}
+
+{% block head %}
+  <title>Вхід до Notes</title>
+  <link rel="stylesheet" href="{% static 'notes/style.css' %}">
 {% endblock %}
+
+{% block content %}
+  <div class="auth-container">
+    <h1>Вхід</h1>
+
+    <form method="post" class="auth-form">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn">Увійти</button>
+    </form>
+
+    <p class="auth-link">Ще не маєте акаунту? <a href="{% url 'register' %}">Зареєструватися</a></p>
+  </div>
+{% endblock %} %}

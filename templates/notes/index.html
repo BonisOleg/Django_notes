@@ -1,24 +1,66 @@
 {% extends 'notes/base.html' %}
 {% load static %}
 
+{% block head %}
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <title>Мої нотатки</title>
+  <link rel="stylesheet" href="{% static 'notes/style.css' %}">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% endblock %}
+
 {% block content %}
   <div class="container">
     <h1>Мої нотатки</h1>
 
-    <!-- Форма для створення нотатки -->
-    <form id="add-note-form" method="POST" class="note-form">
-      {% csrf_token %}
-      <div class="field-group">
-        <input type="text" name="title" placeholder="Заголовок" required>
+    {% if guest %}
+      <div class="guest-container">
+        <p>Щоб створювати нотатки, будь ласка, авторизуйтесь:</p>
+        <a href="{% url 'auth_choice' %}" class="btn large">Зареєструватися або увійти</a>
       </div>
-      <div class="field-group">
-        <input type="text" name="note_footer" placeholder="Примітка">
+    {% else %}
+      <!-- Форма створення нотатки -->
+      <form id="add-note-form" method="POST" action="{% url 'add_note' %}" class="note-form">
+        {% csrf_token %}
+        <div class="field-group">
+          <input type="text" name="title" placeholder="Заголовок" required>
+        </div>
+        <div class="field-group">
+          <input type="text" name="note_footer" placeholder="Примітка">
+        </div>
+        <div class="field-group" style="grid-column: span 2;">
+          <textarea name="text" placeholder="Текст" rows="4" required></textarea>
+        </div>
+        <button type="submit">Додати</button>
+      </form>
+
+      <!-- Форма створення папки -->
+      <div class="folder-actions">
+        <form id="create-folder-form" method="POST" action="{% url 'create_folder' %}">
+          {% csrf_token %}
+          <div class="folder-input-container">
+            <input type="text" name="folder_name" placeholder="Назва нової папки" required>
+            <button type="submit" class="btn">Створити папку</button>
+          </div>
+        </form>
       </div>
-      <div class="field-group" style="grid-column: span 2;">
-        <textarea name="text" placeholder="Текст" rows="4" required></textarea>
-      </div>
-      <button type="submit">Додати</button>
-    </form>
+
+      <!-- Папки -->
+      {% if folders %}
+        <div class="folders-grid">
+          {% for folder in folders %}
+            <div class="folder-block dropzone" data-folder-id="{{ folder.id }}">
+              <a href="{% url 'folder_detail' folder.id %}">
+                <h3 class="folder-title" contenteditable="true" data-id="{{ folder.id }}">{{ folder.name }}</h3>
+              </a>
+              <div class="folder-controls">
+                <button class="btn small rename-folder" data-id="{{ folder.id }}">Змінити назву</button>
+                <button class="btn small danger delete-folder" data-id="{{ folder.id }}">Видалити</button>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endif %}
 
     <hr>
 
@@ -29,6 +71,17 @@
       {% empty %}
         <p>Немає нотаток.</p>
       {% endfor %}
+    </div>
+  </div>
+
+  <!-- Модальне вікно підтвердження видалення папки -->
+  <div id="delete-folder-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h2>Видалити папку</h2>
+      <p>Виберіть режим видалення:</p>
+      <button class="btn danger" id="delete-folder-with-notes">Папку з нотатками</button>
+      <button class="btn" id="delete-folder-only">Лише папку</button>
+      <button class="btn small close-modal">Скасувати</button>
     </div>
   </div>
 

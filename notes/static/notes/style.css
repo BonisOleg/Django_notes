@@ -50,14 +50,12 @@ h1 {
   margin-bottom: 30px;
 }
 
-/* Групи полів */
 .field-group {
   display: flex;
   flex-direction: column;
   width: 100%;
 }
 
-/* Вхідні поля і textarea */
 .field-group input[type="text"],
 .field-group textarea {
   padding: 16px;
@@ -70,13 +68,11 @@ h1 {
   box-sizing: border-box;
 }
 
-/* Placeholder стиль */
 .field-group input::placeholder,
 .field-group textarea::placeholder {
   color: #aaa;
 }
 
-/* Фокус */
 .field-group input:focus,
 .field-group textarea:focus {
   border-color: #f39c12;
@@ -84,7 +80,6 @@ h1 {
   box-shadow: 0 0 6px rgba(243, 156, 18, 0.4);
 }
 
-/* Кнопка */
 .note-form button {
   grid-column: span 2;
   justify-self: center;
@@ -105,14 +100,12 @@ h1 {
   transform: scale(1.05);
 }
 
-/* Список нотаток */
 .note-list {
   text-align: left;
   width: 100%;
   max-width: 700px;
 }
 
-/* Блок окремої нотатки */
 .note-block {
   background: #fdfdfd;
   border-left: 5px solid #f39c12;
@@ -152,7 +145,7 @@ h1 {
   text-decoration: underline;
 }
 
-/* === Кнопки === */
+/* Кнопки */
 .btn {
   display: inline-block;
   padding: 10px 20px;
@@ -175,24 +168,22 @@ h1 {
 .btn.danger {
   background-color: #e74c3c;
 }
-
 .btn.danger:hover {
   background-color: #c0392b;
 }
-
 .btn.small {
   font-size: 13px;
   padding: 6px 14px;
 }
 
-/* === Видалена нотатка (корзина) === */
+/* Видалена нотатка */
 .note-block.deleted {
   border-left: 5px solid #bdc3c7;
   background-color: #fafafa;
   opacity: 0.9;
 }
 
-/* === Меню (оновлене, фіксоване зверху) === */
+/* Меню */
 header {
   position: fixed;
   top: 0;
@@ -210,41 +201,455 @@ nav .menu {
   margin: 0;
   padding: 0;
 }
-
 nav .menu li {
   display: inline-block;
   margin: 0 15px;
 }
-
-nav .menu a {
+nav .menu a,
+.menu-btn-link {
   color: white;
   font-size: 18px;
   text-decoration: none;
   padding: 10px 15px;
   border-radius: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
 }
-
-nav .menu a:hover {
+nav .menu a:hover,
+.menu-btn-link:hover {
   background-color: #d35400;
 }
 
-/* Відступ для контенту під меню */
 main {
   margin-top: 90px;
 }
 
-.menu-btn-link {
-  background: none;
-  border: none;
+/* === Сторінки авторизації/реєстрації === */
+.auth-container {
+  background: #fff;
+  padding: 35px 40px;
+  border-radius: 15px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  max-width: 400px;
+  width: 100%;
+  margin: 100px auto;
+  text-align: center;
+}
+
+.auth-container h1 {
+  font-size: 28px;
+  margin-bottom: 25px;
+  color: #2c3e50;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.auth-form label {
+  text-align: left;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 3px;
+}
+
+.auth-form input {
+  padding: 13px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  width: 100%;
+  background: #fcfcfc;
+}
+
+.auth-form input:focus {
+  outline: none;
+  border-color: #f39c12;
+  box-shadow: 0 0 6px rgba(243, 156, 18, 0.4);
+}
+
+.auth-form .btn {
+  margin-top: 10px;
+  padding: 14px;
+  background: #e67e22;
   color: white;
-  font-size: 18px;
-  padding: 10px 15px;
-  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 30px;
   cursor: pointer;
-  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+.auth-form .btn:hover {
+  background: #d35400;
+  transform: scale(1.05);
+}
+
+.auth-footer {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #555;
+}
+
+.auth-footer a {
+  color: #e67e22;
+  font-weight: 600;
   text-decoration: none;
 }
 
-.menu-btn-link:hover {
-  background-color: #d35400;
+.auth-footer a:hover {
+  text-decoration: underline;
+}
+
+/* === Вибір між входом і реєстрацією === */
+.auth-choice-box {
+  background: #fff;
+  padding: 35px 40px;
+  border-radius: 15px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  max-width: 400px;
+  width: 100%;
+  margin: 100px auto;
+  text-align: center;
+}
+
+.auth-choice-box h1 {
+  font-size: 28px;
+  margin-bottom: 10px;
+  color: #2c3e50;
+}
+
+.auth-choice-box p {
+  font-size: 16px;
+  margin-bottom: 25px;
+  color: #555;
+}
+
+.auth-choice-box .btn {
+  display: block;
+  width: 100%;
+  margin: 8px 0;
+  padding: 14px;
+  font-size: 16px;
+  border-radius: 30px;
+  font-weight: bold;
+}
+
+/* === Сторінка редагування нотатки === */
+.edit-container {
+  background: #fff;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+  width: 100%;
+  max-width: 500px;
+  margin: 100px auto;
+}
+
+.edit-container h1 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+.edit-container label {
+  font-weight: bold;
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
+
+.edit-container input[type="text"],
+.edit-container textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  resize: none;
+  font-size: 16px;
+}
+
+.edit-container button {
+  margin-top: 20px;
+  width: 100%;
+  padding: 14px;
+  background-color: #f8b500;
+  border: none;
+  color: white;
+  font-weight: bold;
+  border-radius: 30px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.edit-container button:hover {
+  background-color: #e09d00;
+}
+
+.back-link {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+  color: #333;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.auth-choice-box {
+  background: #fff;
+  padding: 40px;
+  border-radius: 18px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.2);
+  max-width: 420px;
+  width: 90%;
+  margin: 100px auto;
+  text-align: center;
+}
+
+.auth-choice-box h1 {
+  font-size: 28px;
+  margin-bottom: 15px;
+  color: #2c3e50;
+}
+
+.auth-choice-box p {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 25px;
+}
+
+.auth-choice-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.auth-choice-buttons .btn.large {
+  font-size: 16px;
+  padding: 12px 24px;
+  border-radius: 30px;
+  background: #f39c12;
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.auth-choice-buttons .btn.large:hover {
+  background: #d35400;
+  transform: scale(1.05);
+}
+
+.created-at {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 8px;
+}
+
+.folders-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 40px;
+}
+
+.folder-block {
+  background: #fff7e6;
+  border: 2px solid #f8b500;
+  border-radius: 12px;
+  padding: 20px;
+  width: 48%;
+  margin-bottom: 20px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.folder-block h3 {
+  margin-top: 0;
+  color: #e67e22;
+}
+
+.clearfix {
+  flex-basis: 100%;
+  height: 0;
+}
+
+/* Стилі для папок */
+.folders-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: flex-start;
+  margin-top: 30px;
+}
+
+.folder-block {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  width: 200px;
+  text-align: center;
+  border: 1px solid #f39c12;
+}
+
+.folder-block h3 {
+  font-size: 18px;
+  color: #333;
+}
+
+.folder-block p {
+  font-size: 14px;
+  color: #7f8c8d;
+}
+
+/* Покращення дизайну для форми створення папки */
+.folder-actions form {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.folder-input-container {
+  display: flex;
+  width: 100%;
+  max-width: 600px;
+  gap: 10px;
+}
+
+.folder-input-container input {
+  width: 80%;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.folder-input-container button {
+  padding: 12px 20px;
+  background-color: #f8b500;
+  border: none;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.folder-input-container button:hover {
+  background-color: #e09d00;
+}
+
+.folder-input-container input:focus {
+  border-color: #f39c12;
+  outline: none;
+  box-shadow: 0 0 6px rgba(243, 156, 18, 0.4);
+}
+
+/* Покращення дизайну форми нотатки */
+.note-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 20px;
+  row-gap: 15px;
+  width: 100%;
+  max-width: 700px;
+  margin-top: 20px;
+}
+
+.note-form input,
+.note-form textarea {
+  padding: 14px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #f9f9f9;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.note-form button {
+  grid-column: span 2;
+  justify-self: center;
+  padding: 14px 28px;
+  background: #f8b500;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dropzone {
+  border: 2px dashed transparent;
+  transition: border 0.3s ease;
+}
+
+.dropzone.drag-over {
+  border: 2px dashed #f39c12;
+  background-color: #fff9e6;
+}
+
+.note-form button:hover {
+  background: #e09d00;
+  transform: scale(1.05);
+}
+
+.note-block[draggable="true"] {
+  cursor: grab;
+}
+
+.note-block[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+/* Підсвічування папки під час перетягування */
+.folder-block.drag-over {
+  border: 2px dashed #e67e22;
+  background-color: #fff7e6;
+  transform: scale(1.03);
+  transition: all 0.3s ease;
+}
+
+/* Зменшення розміру нотатки при перетягуванні */
+.note-block.dragging {
+  transform: scale(0.33);
+  opacity: 0.6;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  z-index: 999;
+  position: absolute;
+}
+
+.folder-block.drag-over {
+  box-shadow: 0 0 0 3px #f39c12 inset;
+  transition: 0.3s ease;
+}
+
+.note-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.created-at {
+  font-size: 13px;
+  color: #888;
+  margin-left: 20px;
 }

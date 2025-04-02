@@ -2,6 +2,7 @@ from django import forms
 from .models import Note
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from .models import Folder
 
 class NoteForm(forms.ModelForm):
     class Meta:
@@ -21,3 +22,9 @@ class UkrainianRegisterForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'password1', 'password2']
+
+class FolderForm(forms.ModelForm):
+    class Meta:
+        model = Folder
+        fields = ['name']
+        labels = {'name': 'Назва папки'}
