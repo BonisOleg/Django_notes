@@ -2,13 +2,14 @@
 {% load static %}
 
 {% block content %}
-  <div class="auth-container">
-    <h1>Реєстрація</h1>
-    <form method="POST" class="auth-form">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit" class="btn">Зареєструватися</button>
-    </form>
-    <p class="auth-footer">Вже маєте акаунт? <a href="{% url 'login' %}">Увійти</a></p>
-  </div>
+<div class="auth-container">
+  <h1>Реєстрація</h1>
+  <form method="POST" class="auth-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn">Зареєструватися</button>
+  </form>
+  <p class="auth-footer">Вже маєте акаунт? <a href="{% url 'login' %}">Увійти</a></p>
+</div>
+<script src="{% static 'notes/scripts.js' %}"></script>
 {% endblock %}

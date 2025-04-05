@@ -1,4 +1,4 @@
-/* Анімований фон */
+/* Оптимізовані стилі */
 body {
   font-family: 'Segoe UI', sans-serif;
   margin: 0;
@@ -26,7 +26,6 @@ body {
   }
 }
 
-/* Білий блок-контейнер */
 .container {
   width: 90%;
   max-width: 900px;
@@ -41,14 +40,12 @@ body {
   margin: 0 auto;
 }
 
-/* Заголовок */
 h1 {
   margin-bottom: 30px;
   font-size: 30px;
   color: #2c3e50;
 }
 
-/* Форма нотатки */
 .note-form {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -77,36 +74,11 @@ h1 {
   box-sizing: border-box;
 }
 
-.field-group input::placeholder,
-.field-group textarea::placeholder {
-  color: #aaa;
-}
-
 .field-group input:focus,
 .field-group textarea:focus {
   border-color: #f39c12;
   outline: none;
   box-shadow: 0 0 6px rgba(243, 156, 18, 0.4);
-}
-
-.note-form button {
-  grid-column: span 2;
-  justify-self: center;
-  padding: 14px 28px;
-  background: #e67e22;
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
-  border: none;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
-}
-
-.note-form button:hover {
-  background: #d35400;
-  transform: scale(1.05);
 }
 
 .note-list {
@@ -169,7 +141,6 @@ h1 {
   text-decoration: underline;
 }
 
-/* Кнопки */
 .btn {
   display: inline-block;
   padding: 10px 20px;
@@ -202,14 +173,12 @@ h1 {
   padding: 6px 14px;
 }
 
-/* Видалена нотатка */
 .note-block.deleted {
   border-left: 5px solid #bdc3c7;
   background-color: #fafafa;
   opacity: 0.9;
 }
 
-/* Меню */
 header {
   position: fixed;
   top: 0;
@@ -255,7 +224,6 @@ main {
   margin-top: 0;
 }
 
-/* === Сторінки авторизації/реєстрації === */
 .auth-container {
   background: #fff;
   padding: 40px;
@@ -379,7 +347,6 @@ main {
   transform: scaleX(1);
 }
 
-/* Анімація появи форми */
 .auth-container {
   animation: formAppear 0.5s ease;
 }
@@ -396,7 +363,6 @@ main {
   }
 }
 
-/* Стилі для помилок форми */
 .auth-form .errorlist {
   list-style: none;
   padding: 0;
@@ -414,7 +380,6 @@ main {
   box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
 }
 
-/* Адаптивність */
 @media (max-width: 480px) {
   .auth-container {
     padding: 30px 20px;
@@ -431,7 +396,6 @@ main {
   }
 }
 
-/* === Вибір між входом і реєстрацією === */
 .auth-choice-box {
   background: #fff;
   padding: 35px 40px;
@@ -465,7 +429,6 @@ main {
   font-weight: bold;
 }
 
-/* === Сторінка редагування нотатки === */
 .edit-container {
   background: #fff;
   padding: 40px;
@@ -615,7 +578,6 @@ main {
   margin-bottom: 8px;
 }
 
-/* Стилі для сітки папок */
 .folders-grid {
   display: flex;
   flex-wrap: wrap;
@@ -625,7 +587,6 @@ main {
   justify-content: center;
 }
 
-/* Стилі для блоку папки */
 .folder-block {
   background: #f8f9fa;
   border: 2px solid #f8b500;
@@ -661,7 +622,6 @@ main {
   justify-content: center;
 }
 
-/* Адаптивність для папок */
 @media (max-width: 768px) {
   .folder-block {
     width: calc((100% - 20px) / 2);
@@ -674,7 +634,6 @@ main {
   }
 }
 
-/* Покращення дизайну для форми створення папки */
 .folder-actions form {
   display: flex;
   align-items: center;
@@ -720,7 +679,6 @@ main {
   box-shadow: 0 0 6px rgba(243, 156, 18, 0.4);
 }
 
-/* Покращення дизайну форми нотатки */
 .note-form {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -779,7 +737,6 @@ main {
   cursor: grabbing;
 }
 
-/* Підсвічування папки під час перетягування */
 .folder-block.drag-over {
   border: 2px dashed #f8b500;
   background-color: #fff7e6;
@@ -787,7 +744,6 @@ main {
   transition: all 0.3s ease;
 }
 
-/* Зменшення розміру нотатки при перетягуванні */
 .note-block.dragging {
   transform: scale(0.8);
   opacity: 0.9;
@@ -876,7 +832,6 @@ main {
   }
 }
 
-/* Модальне вікно */
 .modal {
   position: fixed;
   top: 0;
@@ -942,7 +897,6 @@ main {
   background-color: #7f8c8d;
 }
 
-/* Повідомлення про успіх */
 .success-message {
   position: absolute;
   bottom: 10px;
@@ -968,7 +922,6 @@ main {
   }
 }
 
-/* Стилі для списку підписок */
 .list-none {
   list-style: none;
   padding: 0;
@@ -1007,7 +960,6 @@ main {
   color: #f8b500;
 }
 
-/* Стилі для модального вікна редагування */
 .modal-input-container {
   margin-bottom: 25px;
   width: 100%;
@@ -1071,7 +1023,6 @@ main {
   user-select: none;
 }
 
-/* Стилі для особистого кабінету */
 .profile-container {
   background: #fff;
   border-radius: 20px;
@@ -1240,7 +1191,6 @@ main {
   margin: 0;
 }
 
-/* Стилі для сторінок підписок та заявок */
 .subscriptions-container {
   background: #fff;
   border-radius: 20px;
@@ -1365,7 +1315,6 @@ main {
   background: #7f8c8d;
 }
 
-/* Оновлені стилі для карток запитів на підписку */
 .request-card {
   background: #fff;
   border: 2px solid #f8b500;
@@ -1382,7 +1331,7 @@ main {
 .request-card:hover {
   transform: translateY(-5px);
   border-style: dashed;
-  box-shadow: 0 10px 25px rgba(248, 181, 0, 0.15);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
 .request-photo {
@@ -1447,7 +1396,6 @@ main {
   box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
 }
 
-/* Стилі для сітки нотаток користувача */
 .user-notes-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -1467,7 +1415,7 @@ main {
   transform: translateY(-3px);
   background: #fff;
   border-style: dashed;
-  box-shadow: 0 5px 15px rgba(248, 181, 0, 0.1);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .user-note-card .note-header {
@@ -1505,7 +1453,6 @@ main {
   border-top: 1px dashed #f8b500;
 }
 
-/* Адаптивність для мобільних пристроїв */
 @media (max-width: 768px) {
   .user-notes-grid {
     grid-template-columns: 1fr;
@@ -1553,7 +1500,6 @@ main {
   color: #e09d00;
 }
 
-/* Стилі для пустих станів */
 .empty-state {
   text-align: center;
   padding: 40px 20px;
@@ -1567,7 +1513,7 @@ main {
 .empty-state:hover {
   background: #fff;
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(248, 181, 0, 0.1);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .empty-state i {
@@ -1590,7 +1536,6 @@ main {
   line-height: 1.6;
 }
 
-/* Оновлені стилі для пустої папки */
 .folder-empty {
   display: flex;
   flex-direction: column;
@@ -1644,14 +1589,11 @@ main {
   line-height: 1.6;
 }
 
-/* Оновлені стилі для пустої корзини */
 .trash-container {
   background: linear-gradient(135deg, #fff 0%, #fff8e1 100%);
   border-radius: 25px;
   padding: 40px;
-  box-shadow:
-    0 20px 60px rgba(248, 181, 0, 0.15),
-    0 0 40px rgba(248, 181, 0, 0.1) inset;
+  box-shadow: 0 20px 60px rgba(248, 181, 0, 0.15), 0 0 40px rgba(248, 181, 0, 0.1) inset;
   max-width: 1000px;
   margin: 40px auto;
   position: relative;
@@ -1665,9 +1607,7 @@ main {
   left: 0;
   right: 0;
   height: 200px;
-  background: linear-gradient(180deg,
-      rgba(248, 181, 0, 0.1) 0%,
-      transparent 100%);
+  background: linear-gradient(180deg, rgba(248, 181, 0, 0.1) 0%, transparent 100%);
   pointer-events: none;
 }
 
@@ -1696,10 +1636,7 @@ main {
   transform: translateX(-50%);
   width: 120%;
   height: 3px;
-  background: linear-gradient(90deg,
-      transparent,
-      #f8b500,
-      transparent);
+  background: linear-gradient(90deg, transparent, #f8b500, transparent);
 }
 
 .trash-actions {
@@ -1726,10 +1663,7 @@ main {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg,
-      transparent,
-      rgba(255, 255, 255, 0.2),
-      transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
   transition: 0.5s;
 }
 
@@ -1770,9 +1704,7 @@ main {
   background: #fff;
   border-radius: 15px;
   padding: 25px;
-  box-shadow:
-    0 5px 15px rgba(0, 0, 0, 0.05),
-    0 0 20px rgba(248, 181, 0, 0.05) inset;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05), 0 0 20px rgba(248, 181, 0, 0.05) inset;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   border: 2px solid transparent;
   position: relative;
@@ -1794,9 +1726,7 @@ main {
 .trash-note:hover {
   transform: translateY(-5px) scale(1.02);
   border-color: #f8b500;
-  box-shadow:
-    0 15px 35px rgba(248, 181, 0, 0.15),
-    0 0 30px rgba(248, 181, 0, 0.1) inset;
+  box-shadow: 0 15px 35px rgba(248, 181, 0, 0.15), 0 0 30px rgba(248, 181, 0, 0.1) inset;
 }
 
 .trash-note:hover::before {
@@ -1861,7 +1791,6 @@ main {
   transform: translateY(-2px);
 }
 
-/* Оновлений пустий стан корзини */
 .trash-empty {
   display: flex;
   flex-direction: column;
@@ -1883,9 +1812,7 @@ main {
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle at center,
-      rgba(248, 181, 0, 0.1) 0%,
-      transparent 70%);
+  background: radial-gradient(circle at center, rgba(248, 181, 0, 0.1) 0%, transparent 70%);
   animation: rotateGradient 15s linear infinite;
 }
 
@@ -1982,4 +1909,24 @@ main {
   .trash-empty p {
     font-size: 16px;
   }
+}
+
+.page-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: calc(100vh - 100px);
+  padding: 100px 20px;
+  box-sizing: border-box;
+}
+
+.white-block {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+  max-width: 800px;
+  width: 100%;
+  padding: 40px;
+  box-sizing: border-box;
 }

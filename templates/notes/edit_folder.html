@@ -2,20 +2,22 @@
 {% load static %}
 
 {% block head %}
-  <title>Редагування папки</title>
-  <link rel="stylesheet" href="{% static 'notes/style.css' %}">
+<title>Редагування папки</title>
+<link rel="stylesheet" href="{% static 'notes/style.css' %}">
 {% endblock %}
 
 {% block content %}
-  <div class="container">
-    <h1>Редагування папки</h1>
+<div class="container">
+  <h1>Редагування папки</h1>
 
-    <form method="POST" class="note-form">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit" class="btn">Змінити назву</button>
-    </form>
+  <form method="POST" class="note-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn">Змінити назву</button>
+  </form>
 
-    <a href="{% url 'note_list' %}" class="btn secondary">Назад до нотаток</a>
-  </div>
+  <a href="{% url 'note_list' %}" class="btn secondary">Назад до нотаток</a>
+</div>
+
+<script src="{% static 'notes/scripts.js' %}"></script>
 {% endblock %}

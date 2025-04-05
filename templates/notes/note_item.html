@@ -20,19 +20,3 @@
     {% endif %}
   </div>
 </div>
-
-<script>
-  document.querySelectorAll('.expand-btn').forEach(btn => {
-    const content = btn.previousElementSibling;
-    const originalHeight = content.scrollHeight;
-
-    if (originalHeight <= 150) {
-      btn.style.display = 'none';
-    } else {
-      btn.addEventListener('click', () => {
-        content.classList.toggle('expanded');
-        btn.textContent = content.classList.contains('expanded') ? 'Показати менше' : 'Показати більше';
-      });
-    }
-  });
-</script>

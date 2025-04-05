@@ -2,13 +2,14 @@
 {% load static %}
 
 {% block content %}
-  <div class="edit-container">
-    <h1>Редагування нотатки</h1>
-    <form method="POST">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit">Зберегти зміни</button>
-    </form>
-    <a class="back-link" href="{% url 'note_list' %}">Повернутися до списку нотаток</a>
-  </div>
+<div class="edit-container">
+  <h1>Редагування нотатки</h1>
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Зберегти зміни</button>
+  </form>
+  <a class="back-link" href="{% url 'note_list' %}">Повернутися до списку нотаток</a>
+</div>
+<script src="{% static 'notes/scripts.js' %}"></script>
 {% endblock %}

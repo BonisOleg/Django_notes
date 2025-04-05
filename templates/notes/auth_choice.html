@@ -1,11 +1,13 @@
 {% extends 'notes/base.html' %}
+{% load static %}
 {% block content %}
-  <div class="auth-choice-box">
-    <h1>Вітаємо!</h1>
-    <p>Оберіть дію:</p>
-    <div class="auth-choice-buttons">
-      <a href="{% url 'login' %}" class="btn large">Увійти</a>
-      <a href="{% url 'register' %}" class="btn large">Зареєструватися</a>
-    </div>
+<div class="auth-choice-box">
+  <h1>Вітаємо!</h1>
+  <p>Оберіть дію:</p>
+  <div class="auth-choice-buttons">
+    <a href="{% url 'login' %}" class="btn large">Увійти</a>
+    <a href="{% url 'register' %}" class="btn large">Зареєструватися</a>
   </div>
+</div>
+<script src="{% static 'notes/scripts.js' %}"></script>
 {% endblock %}

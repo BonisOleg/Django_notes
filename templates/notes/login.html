@@ -2,20 +2,22 @@
 {% load static %}
 
 {% block head %}
-  <title>Вхід до Notes</title>
-  <link rel="stylesheet" href="{% static 'notes/style.css' %}">
+<title>Вхід до Notes</title>
+<link rel="stylesheet" href="{% static 'notes/style.css' %}">
 {% endblock %}
 
 {% block content %}
-  <div class="auth-container">
-    <h1>Вхід</h1>
+<div class="auth-container">
+  <h1>Вхід</h1>
 
-    <form method="post" class="auth-form">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit" class="btn">Увійти</button>
-    </form>
+  <form method="post" class="auth-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn">Увійти</button>
+  </form>
 
-    <p class="auth-link">Ще не маєте акаунту? <a href="{% url 'register' %}">Зареєструватися</a></p>
-  </div>
-{% endblock %} %}
+  <p class="auth-link">Ще не маєте акаунту? <a href="{% url 'register' %}">Зареєструватися</a></p>
+</div>
+
+<script src="{% static 'notes/scripts.js' %}"></script>
+{% endblock %}
