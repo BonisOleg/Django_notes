@@ -283,4 +283,30 @@ $(document).ready(function () {
     const id = $(this).data('id');
     window.location.href = `/notes/folder/${id}/`;
   });
+
+  // Повернення нотатки з папки
+  $(document).on('click', '.return-from-folder', function (e) {
+    e.preventDefault();
+    const noteId = $(this).data('note-id');
+    const noteBlock = $(this).closest('.note-block');
+
+    $.ajax({
+      type: 'POST',
+      url: `/notes/return_note_from_folder/${noteId}/`,
+      success: function (response) {
+        if (response.success) {
+          noteBlock.fadeOut(300, function () {
+            $(this).remove();
+            // Якщо це була остання нотатка в папці
+            if ($('.note-block').length === 0) {
+              $('.note-list').html('<p>У цій папці поки немає нотаток.</p>');
+            }
+          });
+        }
+      },
+      error: function () {
+        alert('Помилка при поверненні нотатки з папки.');
+      }
+    });
+  });
 });

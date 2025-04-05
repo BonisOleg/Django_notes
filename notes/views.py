@@ -232,3 +232,12 @@ def view_user_notes(request, user_id):
     user = get_object_or_404(User, id=user_id)
     notes = Note.objects.filter(user=user, is_deleted=False)
     return render(request, 'notes/user_notes.html', {'notes': notes, 'user': user})
+
+@login_required
+def return_note_from_folder(request, note_id):
+    if request.method == 'POST':
+        note = get_object_or_404(Note, pk=note_id, user=request.user)
+        note.folder = None
+        note.save()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False})

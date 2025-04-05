@@ -15,6 +15,7 @@ urlpatterns = [
     path('delete_folder/<int:pk>/', views.delete_folder, name='delete_folder'),
     path('folder/<int:folder_id>/', views.folder_detail, name='folder_detail'),  # Виправлено!
     path('move_note_to_folder/', views.move_note_to_folder, name='move_note_to_folder'),
+    path('return_note_from_folder/<int:note_id>/', views.return_note_from_folder, name='return_note_from_folder'),
 
     # === КОРЗИНА ===
     path('trash/', views.trash, name='trash'),

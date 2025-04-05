@@ -472,61 +472,63 @@ main {
   margin-bottom: 8px;
 }
 
-.folders-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  margin-bottom: 40px;
-}
-
-.folder-block {
-  background: #fff7e6;
-  border: 2px solid #f8b500;
-  border-radius: 12px;
-  padding: 20px;
-  width: 48%;
-  margin-bottom: 20px;
-  text-align: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-.folder-block h3 {
-  margin-top: 0;
-  color: #e67e22;
-}
-
-.clearfix {
-  flex-basis: 100%;
-  height: 0;
-}
-
-/* Стилі для папок */
+/* Стилі для сітки папок */
 .folders-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  justify-content: flex-start;
-  margin-top: 30px;
+  width: 100%;
+  margin: 30px 0;
+  justify-content: center;
 }
 
+/* Стилі для блоку папки */
 .folder-block {
-  background-color: #fff;
+  background: #f8f9fa;
+  border: 2px solid #f8b500;
+  border-radius: 12px;
   padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-  width: 200px;
+  width: calc((100% - 40px) / 3);
   text-align: center;
-  border: 1px solid #f39c12;
+  box-shadow: 0 3px 10px rgba(248, 181, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.folder-block:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(248, 181, 0, 0.2);
+  border: 2px dashed #f8b500;
+  background: #fff;
 }
 
 .folder-block h3 {
+  margin: 0 0 15px 0;
+  color: #2c3e50;
   font-size: 18px;
-  color: #333;
 }
 
-.folder-block p {
-  font-size: 14px;
-  color: #7f8c8d;
+.folder-block a {
+  text-decoration: none;
+}
+
+.folder-controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+/* Адаптивність для папок */
+@media (max-width: 768px) {
+  .folder-block {
+    width: calc((100% - 20px) / 2);
+  }
+}
+
+@media (max-width: 480px) {
+  .folder-block {
+    width: 100%;
+  }
 }
 
 /* Покращення дизайну для форми створення папки */
@@ -636,7 +638,7 @@ main {
 
 /* Підсвічування папки під час перетягування */
 .folder-block.drag-over {
-  border: 2px dashed #e67e22;
+  border: 2px dashed #f8b500;
   background-color: #fff7e6;
   transform: scale(1.03);
   transition: all 0.3s ease;
@@ -645,14 +647,14 @@ main {
 /* Зменшення розміру нотатки при перетягуванні */
 .note-block.dragging {
   transform: scale(0.33);
-  opacity: 0.6;
+  opacity: 0.7;
   transition: transform 0.2s ease, opacity 0.2s ease;
   z-index: 999;
   position: absolute;
 }
 
 .folder-block.drag-over {
-  box-shadow: 0 0 0 3px #f39c12 inset;
+  box-shadow: 0 0 0 3px #f8b500 inset;
   transition: 0.3s ease;
 }
 
@@ -686,7 +688,7 @@ main {
   background: white;
   padding: 30px;
   border-radius: 12px;
-  min-width: 300px;
+  min-width: 400px;
   position: relative;
 }
 
@@ -694,27 +696,44 @@ main {
   margin-top: 0;
   margin-bottom: 20px;
   color: #333;
+  text-align: center;
 }
 
-.modal-content input {
-  width: 100%;
-  padding: 12px;
+.modal-content p {
   margin-bottom: 20px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 16px;
-}
-
-.modal-content input:focus {
-  border-color: #f39c12;
-  outline: none;
-  box-shadow: 0 0 6px rgba(243, 156, 18, 0.4);
+  text-align: center;
+  color: #666;
 }
 
 .modal-buttons {
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
   gap: 10px;
+  width: 100%;
+}
+
+.modal-buttons .btn {
+  width: 100%;
+  padding: 12px 20px;
+  font-size: 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.modal-buttons .btn.danger {
+  background-color: #e74c3c;
+}
+
+.modal-buttons .btn.danger:hover {
+  background-color: #c0392b;
+}
+
+.modal-buttons .btn.secondary {
+  background-color: #95a5a6;
+}
+
+.modal-buttons .btn.secondary:hover {
+  background-color: #7f8c8d;
 }
 
 /* Повідомлення про успіх */
@@ -780,4 +799,68 @@ main {
 
 .list-none a:hover {
   color: #f8b500;
+}
+
+/* Стилі для модального вікна редагування */
+.modal-input-container {
+  margin-bottom: 25px;
+  width: 100%;
+}
+
+.modal-input-container input {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  border: 2px solid #e8e8e8;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.modal-input-container input:focus {
+  border-color: #f8b500;
+  background-color: #fff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(248, 181, 0, 0.2);
+}
+
+.modal-input-container input::placeholder {
+  color: #adb5bd;
+}
+
+.modal-buttons .btn.primary {
+  background-color: #f8b500;
+  color: white;
+}
+
+.modal-buttons .btn.primary:hover {
+  background-color: #e09d00;
+  transform: translateY(-1px);
+}
+
+.modal {
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  animation: modalAppear 0.3s ease;
+}
+
+@keyframes modalAppear {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.folder-title {
+  cursor: pointer;
+  outline: none;
+  user-select: none;
 }

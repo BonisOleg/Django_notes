@@ -7,11 +7,14 @@
   <p>{{ note.text|linebreaks }}</p>
 
   {% if note.note_footer %}
-    <p class="footer"><em>{{ note.note_footer }}</em></p>
+  <p class="footer"><em>{{ note.note_footer }}</em></p>
   {% endif %}
 
   <div class="actions">
     <a href="{% url 'edit_note' note.pk %}">Редагувати</a> |
     <a href="{% url 'delete_note' note.pk %}">Видалити</a>
+    {% if note.folder %}
+    | <a href="#" class="return-from-folder" data-note-id="{{ note.pk }}">Повернути з папки</a>
+    {% endif %}
   </div>
 </div>
