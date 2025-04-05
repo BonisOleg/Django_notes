@@ -116,25 +116,40 @@ h1 {
 }
 
 .note-block {
-  background: #fdfdfd;
-  border-left: 5px solid #f39c12;
-  border-radius: 10px;
+  background: #fff;
+  border-radius: 12px;
   padding: 20px;
   margin-bottom: 20px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+  border-left: 4px solid #f8b500;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .note-block h2 {
-  margin-top: 0;
+  margin: 0 0 10px 0;
   color: #2c3e50;
+  font-size: 20px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
-.footer {
-  margin-top: 10px;
-  font-style: italic;
+.note-block p {
+  margin: 0;
+  color: #34495e;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.note-block .footer {
+  margin-top: 15px;
   color: #7f8c8d;
-  border-top: 1px dashed #ccc;
-  padding-top: 8px;
+  font-size: 14px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .actions {
@@ -243,81 +258,177 @@ main {
 /* === Сторінки авторизації/реєстрації === */
 .auth-container {
   background: #fff;
-  padding: 35px 40px;
-  border-radius: 15px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-  max-width: 400px;
-  width: 100%;
-  margin: 0 auto;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
+  max-width: 450px;
+  width: 90%;
+  margin: 100px auto;
   text-align: center;
 }
 
 .auth-container h1 {
-  font-size: 28px;
+  font-size: 32px;
   margin-bottom: 25px;
   color: #2c3e50;
+  position: relative;
+  display: inline-block;
+}
+
+.auth-container h1::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(to right, transparent, #f8b500, transparent);
 }
 
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.auth-form p {
+  position: relative;
 }
 
 .auth-form label {
   text-align: left;
   font-weight: 600;
-  color: #444;
-  margin-bottom: 3px;
+  color: #2c3e50;
+  margin-bottom: 8px;
+  display: block;
+  font-size: 14px;
+  transition: color 0.3s ease;
 }
 
 .auth-form input {
-  padding: 13px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  font-size: 16px;
   width: 100%;
-  background: #fcfcfc;
+  padding: 14px;
+  border-radius: 12px;
+  border: 2px solid #e8e8e8;
+  font-size: 16px;
+  background: #f8f9fa;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
 .auth-form input:focus {
   outline: none;
-  border-color: #f39c12;
-  box-shadow: 0 0 6px rgba(243, 156, 18, 0.4);
+  border-color: #f8b500;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(248, 181, 0, 0.1);
 }
 
-.auth-form .btn {
-  margin-top: 10px;
-  padding: 14px;
-  background: #e67e22;
+.auth-form input:focus+label {
+  color: #f8b500;
+}
+
+.auth-form button {
+  background: #f8b500;
   color: white;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
   font-size: 16px;
   font-weight: bold;
-  border: none;
-  border-radius: 30px;
   cursor: pointer;
   transition: all 0.3s ease;
+  margin-top: 10px;
 }
 
-.auth-form .btn:hover {
-  background: #d35400;
-  transform: scale(1.05);
+.auth-form button:hover {
+  background: #e09d00;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(248, 181, 0, 0.2);
 }
 
 .auth-footer {
-  margin-top: 20px;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 2px dashed #f8b500;
+  color: #7f8c8d;
   font-size: 14px;
-  color: #555;
 }
 
 .auth-footer a {
-  color: #e67e22;
+  color: #f8b500;
   font-weight: 600;
   text-decoration: none;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
-.auth-footer a:hover {
-  text-decoration: underline;
+.auth-footer a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #f8b500;
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.auth-footer a:hover::after {
+  transform: scaleX(1);
+}
+
+/* Анімація появи форми */
+.auth-container {
+  animation: formAppear 0.5s ease;
+}
+
+@keyframes formAppear {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Стилі для помилок форми */
+.auth-form .errorlist {
+  list-style: none;
+  padding: 0;
+  margin: 5px 0 0;
+  color: #e74c3c;
+  font-size: 13px;
+  text-align: left;
+}
+
+.auth-form input.error {
+  border-color: #e74c3c;
+}
+
+.auth-form input.error:focus {
+  box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+}
+
+/* Адаптивність */
+@media (max-width: 480px) {
+  .auth-container {
+    padding: 30px 20px;
+    margin: 50px auto;
+  }
+
+  .auth-form input {
+    padding: 12px;
+    font-size: 15px;
+  }
+
+  .auth-container h1 {
+    font-size: 28px;
+  }
 }
 
 /* === Вибір між входом і реєстрацією === */
@@ -357,53 +468,85 @@ main {
 /* === Сторінка редагування нотатки === */
 .edit-container {
   background: #fff;
-  padding: 30px;
-  border-radius: 15px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
   width: 100%;
-  max-width: 500px;
+  max-width: 600px;
   margin: 0 auto;
+  transition: all 0.3s ease;
+}
+
+.edit-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
 }
 
 .edit-container h1 {
   text-align: center;
-  margin-bottom: 25px;
-  color: #333;
+  margin-bottom: 30px;
+  color: #2c3e50;
+  font-size: 32px;
+  position: relative;
+  display: inline-block;
+}
+
+.edit-container h1::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(to right, transparent, #f8b500, transparent);
 }
 
 .edit-container label {
   font-weight: bold;
   display: block;
-  margin-top: 15px;
-  margin-bottom: 5px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  color: #2c3e50;
 }
 
 .edit-container input[type="text"],
 .edit-container textarea {
   width: 100%;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
+  padding: 14px;
+  border: 2px solid #e8e8e8;
+  border-radius: 12px;
   resize: none;
   font-size: 16px;
+  background: #f9f9f9;
+  transition: all 0.3s ease;
+}
+
+.edit-container input[type="text"]:focus,
+.edit-container textarea:focus {
+  outline: none;
+  border-color: #f8b500;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(248, 181, 0, 0.1);
 }
 
 .edit-container button {
-  margin-top: 20px;
+  margin-top: 30px;
   width: 100%;
-  padding: 14px;
+  padding: 16px;
   background-color: #f8b500;
   border: none;
   color: white;
   font-weight: bold;
   border-radius: 30px;
-  font-size: 16px;
+  font-size: 18px;
   cursor: pointer;
-  transition: 0.3s;
+  transition: all 0.3s ease;
 }
 
 .edit-container button:hover {
   background-color: #e09d00;
+  transform: translateY(-3px);
 }
 
 .back-link {
@@ -646,11 +789,47 @@ main {
 
 /* Зменшення розміру нотатки при перетягуванні */
 .note-block.dragging {
-  transform: scale(0.33);
-  opacity: 0.7;
+  transform: scale(0.8);
+  opacity: 0.9;
+  max-width: 300px;
+  background: #fff;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   transition: transform 0.2s ease, opacity 0.2s ease;
   z-index: 999;
   position: absolute;
+  cursor: grabbing;
+}
+
+.note-block.dragging .note-content {
+  max-height: 100px;
+  overflow: hidden;
+}
+
+.note-block.dragging .note-content::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  background: linear-gradient(transparent, #fff);
+  pointer-events: none;
+}
+
+.note-block.dragging .actions,
+.note-block.dragging .expand-btn {
+  display: none;
+}
+
+.note-block.dragging .note-header {
+  margin-bottom: 10px;
+}
+
+.note-block.dragging h2 {
+  font-size: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .folder-block.drag-over {
@@ -661,13 +840,40 @@ main {
 .note-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 15px;
 }
 
-.created-at {
+.note-header h2 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 20px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  max-width: calc(100% - 100px);
+  line-height: 1.4;
+}
+
+.note-header .created-at {
   font-size: 13px;
-  color: #888;
-  margin-left: 20px;
+  color: #95a5a6;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .note-header {
+    flex-direction: column;
+  }
+
+  .note-header h2 {
+    max-width: 100%;
+  }
+
+  .note-header .created-at {
+    align-self: flex-end;
+  }
 }
 
 /* Модальне вікно */
@@ -1102,13 +1308,38 @@ main {
 
 .subscription-actions {
   display: flex;
-  gap: 10px;
+  gap: 20px;
 }
 
 .subscription-actions .btn {
-  padding: 10px 20px;
-  font-size: 14px;
-  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.subscription-actions .btn.accept {
+  background: #2ecc71;
+  box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+}
+
+.subscription-actions .btn.accept:hover {
+  background: #27ae60;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(46, 204, 113, 0.4);
+}
+
+.subscription-actions .btn.reject {
+  background: #e74c3c;
+  box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+}
+
+.subscription-actions .btn.reject:hover {
+  background: #c0392b;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
 }
 
 .subscription-empty {
@@ -1134,63 +1365,86 @@ main {
   background: #7f8c8d;
 }
 
-/* Стилі для заявок на підписку */
+/* Оновлені стилі для карток запитів на підписку */
 .request-card {
-  background: #f8f9fa;
+  background: #fff;
   border: 2px solid #f8b500;
-  border-radius: 12px;
-  padding: 25px;
-  margin-bottom: 20px;
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 25px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .request-card:hover {
-  transform: translateY(-3px);
-  background: #fff;
+  transform: translateY(-5px);
   border-style: dashed;
-  box-shadow: 0 5px 15px rgba(248, 181, 0, 0.1);
-}
-
-.request-info {
-  display: flex;
-  align-items: center;
-  gap: 20px;
+  box-shadow: 0 10px 25px rgba(248, 181, 0, 0.15);
 }
 
 .request-photo {
-  width: 60px;
-  height: 60px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #f8b500;
+  border: 3px solid #f8b500;
+  transition: transform 0.3s ease;
+}
+
+.request-photo:hover {
+  transform: scale(1.1);
 }
 
 .request-username {
-  font-size: 18px;
+  font-size: 22px;
   color: #2c3e50;
-  font-weight: bold;
+  font-weight: 700;
+  margin: 0 20px;
+  text-align: center;
+  transition: color 0.3s ease;
+}
+
+.request-username:hover {
+  color: #f8b500;
 }
 
 .request-actions {
   display: flex;
-  gap: 10px;
+  gap: 20px;
 }
 
 .request-actions .btn {
-  padding: 8px 16px;
-  font-size: 14px;
-  border-radius: 6px;
+  padding: 14px 28px;
+  font-size: 16px;
+  border-radius: 15px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .request-actions .btn.accept {
   background: #2ecc71;
+  box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
 }
 
 .request-actions .btn.accept:hover {
   background: #27ae60;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(46, 204, 113, 0.4);
+}
+
+.request-actions .btn.reject {
+  background: #e74c3c;
+  box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+}
+
+.request-actions .btn.reject:hover {
+  background: #c0392b;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
 }
 
 /* Стилі для сітки нотаток користувача */
@@ -1259,5 +1513,473 @@ main {
 
   .user-note-card {
     margin: 0 10px;
+  }
+}
+
+.note-content {
+  max-height: 150px;
+  overflow: hidden;
+  position: relative;
+  transition: max-height 0.3s ease;
+}
+
+.note-content.expanded {
+  max-height: none;
+}
+
+.note-content:not(.expanded)::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  background: linear-gradient(transparent, #fff);
+  pointer-events: none;
+}
+
+.expand-btn {
+  display: inline-block;
+  margin-top: 10px;
+  color: #f8b500;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  user-select: none;
+  transition: color 0.3s ease;
+}
+
+.expand-btn:hover {
+  color: #e09d00;
+}
+
+/* Стилі для пустих станів */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  background: #f8f9fa;
+  border: 2px dashed #f8b500;
+  border-radius: 15px;
+  margin: 20px 0;
+  transition: all 0.3s ease;
+}
+
+.empty-state:hover {
+  background: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(248, 181, 0, 0.1);
+}
+
+.empty-state i {
+  font-size: 48px;
+  color: #f8b500;
+  margin-bottom: 15px;
+  display: block;
+}
+
+.empty-state h3 {
+  color: #2c3e50;
+  font-size: 24px;
+  margin: 0 0 10px 0;
+}
+
+.empty-state p {
+  color: #7f8c8d;
+  font-size: 16px;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Оновлені стилі для пустої папки */
+.folder-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  background: linear-gradient(135deg, #fff8e1 0%, #fff 100%);
+  border: 2px dashed #f8b500;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.folder-empty:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.folder-empty i {
+  font-size: 80px;
+  color: #f8b500;
+  margin-bottom: 20px;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.folder-empty h3 {
+  color: #2c3e50;
+  font-size: 26px;
+  margin: 0 0 10px 0;
+  text-align: center;
+}
+
+.folder-empty p {
+  color: #7f8c8d;
+  font-size: 18px;
+  text-align: center;
+  max-width: 400px;
+  line-height: 1.6;
+}
+
+/* Оновлені стилі для пустої корзини */
+.trash-container {
+  background: linear-gradient(135deg, #fff 0%, #fff8e1 100%);
+  border-radius: 25px;
+  padding: 40px;
+  box-shadow:
+    0 20px 60px rgba(248, 181, 0, 0.15),
+    0 0 40px rgba(248, 181, 0, 0.1) inset;
+  max-width: 1000px;
+  margin: 40px auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.trash-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 200px;
+  background: linear-gradient(180deg,
+      rgba(248, 181, 0, 0.1) 0%,
+      transparent 100%);
+  pointer-events: none;
+}
+
+.trash-header {
+  text-align: center;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.trash-header h1 {
+  font-size: 42px;
+  color: #2c3e50;
+  margin: 0 0 20px 0;
+  background: linear-gradient(120deg, #f8b500, #e67e22);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  position: relative;
+  display: inline-block;
+}
+
+.trash-header h1::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120%;
+  height: 3px;
+  background: linear-gradient(90deg,
+      transparent,
+      #f8b500,
+      transparent);
+}
+
+.trash-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin: 30px 0;
+}
+
+.trash-actions .btn {
+  padding: 14px 28px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 12px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.trash-actions .btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.2),
+      transparent);
+  transition: 0.5s;
+}
+
+.trash-actions .btn:hover::before {
+  left: 100%;
+}
+
+.trash-actions .btn.restore-all {
+  background: #2ecc71;
+  box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+}
+
+.trash-actions .btn.restore-all:hover {
+  background: #27ae60;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(46, 204, 113, 0.4);
+}
+
+.trash-actions .btn.delete-all {
+  background: #e74c3c;
+  box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+}
+
+.trash-actions .btn.delete-all:hover {
+  background: #c0392b;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+}
+
+.trash-notes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
+  padding: 20px;
+}
+
+.trash-note {
+  background: #fff;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow:
+    0 5px 15px rgba(0, 0, 0, 0.05),
+    0 0 20px rgba(248, 181, 0, 0.05) inset;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.trash-note::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(90deg, #f8b500, #e67e22);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.trash-note:hover {
+  transform: translateY(-5px) scale(1.02);
+  border-color: #f8b500;
+  box-shadow:
+    0 15px 35px rgba(248, 181, 0, 0.15),
+    0 0 30px rgba(248, 181, 0, 0.1) inset;
+}
+
+.trash-note:hover::before {
+  opacity: 1;
+}
+
+.trash-note h3 {
+  font-size: 20px;
+  color: #2c3e50;
+  margin: 0 0 15px 0;
+  line-height: 1.4;
+}
+
+.trash-note .note-content {
+  color: #34495e;
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.trash-note .note-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px dashed #f8b500;
+}
+
+.trash-note .created-at {
+  font-size: 13px;
+  color: #95a5a6;
+}
+
+.trash-note .actions {
+  display: flex;
+  gap: 10px;
+}
+
+.trash-note .actions .btn {
+  padding: 8px 16px;
+  font-size: 14px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.trash-note .actions .btn.restore {
+  background: #2ecc71;
+}
+
+.trash-note .actions .btn.restore:hover {
+  background: #27ae60;
+  transform: translateY(-2px);
+}
+
+.trash-note .actions .btn.delete {
+  background: #e74c3c;
+}
+
+.trash-note .actions .btn.delete:hover {
+  background: #c0392b;
+  transform: translateY(-2px);
+}
+
+/* Оновлений пустий стан корзини */
+.trash-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 40px;
+  background: #fff;
+  border-radius: 25px;
+  margin: 40px auto;
+  position: relative;
+  overflow: hidden;
+  max-width: 600px;
+}
+
+.trash-empty::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center,
+      rgba(248, 181, 0, 0.1) 0%,
+      transparent 70%);
+  animation: rotateGradient 15s linear infinite;
+}
+
+@keyframes rotateGradient {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.trash-empty i {
+  font-size: 100px;
+  background: linear-gradient(120deg, #f8b500, #e67e22);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 30px;
+  position: relative;
+  animation: floatIcon 3s ease-in-out infinite;
+}
+
+@keyframes floatIcon {
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+
+  50% {
+    transform: translateY(-15px) rotate(5deg);
+  }
+}
+
+.trash-empty h2 {
+  font-size: 36px;
+  background: linear-gradient(120deg, #f8b500, #e67e22);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0 0 20px 0;
+  position: relative;
+  z-index: 1;
+}
+
+.trash-empty p {
+  color: #7f8c8d;
+  font-size: 18px;
+  line-height: 1.8;
+  text-align: center;
+  max-width: 400px;
+  margin: 0;
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .trash-container {
+    margin: 20px;
+    padding: 30px 20px;
+  }
+
+  .trash-header h1 {
+    font-size: 32px;
+  }
+
+  .trash-actions {
+    flex-direction: column;
+  }
+
+  .trash-actions .btn {
+    width: 100%;
+  }
+
+  .trash-notes {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 10px;
+  }
+
+  .trash-empty {
+    padding: 60px 20px;
+    margin: 20px;
+  }
+
+  .trash-empty i {
+    font-size: 80px;
+  }
+
+  .trash-empty h2 {
+    font-size: 28px;
+  }
+
+  .trash-empty p {
+    font-size: 16px;
   }
 }

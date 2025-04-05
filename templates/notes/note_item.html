@@ -4,11 +4,13 @@
     <p class="created-at">{{ note.created_at|date:"d.m.Y H:i" }}</p>
   </div>
 
-  <p>{{ note.text|linebreaks }}</p>
-
-  {% if note.note_footer %}
-  <p class="footer"><em>{{ note.note_footer }}</em></p>
-  {% endif %}
+  <div class="note-content">
+    <p>{{ note.text|linebreaks }}</p>
+    {% if note.note_footer %}
+    <p class="footer"><em>{{ note.note_footer }}</em></p>
+    {% endif %}
+  </div>
+  <span class="expand-btn">Показати більше</span>
 
   <div class="actions">
     <a href="{% url 'edit_note' note.pk %}">Редагувати</a> |
@@ -18,3 +20,19 @@
     {% endif %}
   </div>
 </div>
+
+<script>
+  document.querySelectorAll('.expand-btn').forEach(btn => {
+    const content = btn.previousElementSibling;
+    const originalHeight = content.scrollHeight;
+
+    if (originalHeight <= 150) {
+      btn.style.display = 'none';
+    } else {
+      btn.addEventListener('click', () => {
+        content.classList.toggle('expanded');
+        btn.textContent = content.classList.contains('expanded') ? 'Показати менше' : 'Показати більше';
+      });
+    }
+  });
+</script>
