@@ -1,0 +1,17 @@
+{% extends 'notes/base.html' %}
+{% block content %}
+<div class="container">
+    <h1>Нотатки користувача {{ user.username }}</h1>
+    <ul>
+        {% for note in notes %}
+        <li>
+            <h2>{{ note.title }}</h2>
+            <p>{{ note.text|linebreaks }}</p>
+        </li>
+        {% empty %}
+        <p>У цього користувача немає нотаток.</p>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'view_subscriptions' %}" class="btn">Назад до підписок</a>
+</div>
+{% endblock %}

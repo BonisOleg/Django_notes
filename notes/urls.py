@@ -29,4 +29,13 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('login/', auth_views.LoginView.as_view(template_name='notes/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='main_home'), name='logout'),
+
+    path('upload_photo/', views.upload_photo, name='upload_photo'),
+    path('subscribe/', views.subscribe, name='subscribe'),
+
+    path('subscriptions/', views.view_subscriptions, name='view_subscriptions'),
+    path('subscription_requests/', views.view_subscription_requests, name='view_subscription_requests'),
+    path('confirm_subscription/<int:subscription_id>/', views.confirm_subscription, name='confirm_subscription'),
+    path('cancel_subscription/<int:subscription_id>/', views.cancel_subscription, name='cancel_subscription'),
+    path('user_notes/<int:user_id>/', views.view_user_notes, name='view_user_notes'),
 ]

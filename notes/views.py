@@ -3,8 +3,10 @@ from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from .models import Note, Folder
+from .models import Note, Folder, Subscription, Profile
 from .forms import NoteForm, UkrainianRegisterForm, FolderForm
+from django.contrib.auth.models import User
+from django.core.files.storage import FileSystemStorage
 
 def main_home(request):
     return render(request, 'notes/main_home.html')
@@ -174,3 +176,59 @@ def register(request):
 @login_required
 def profile(request):
     return render(request, 'notes/profile.html')
+
+@login_required
+def upload_photo(request):
+    if request.method == 'POST' and request.FILES['photo']:
+        photo = request.FILES['photo']
+        profile, created = Profile.objects.get_or_create(user=request.user)
+        profile.photo = photo
+        profile.save()
+        return render(request, 'notes/profile.html', {'uploaded_file_url': profile.photo.url})
+    return redirect('profile')
+
+@login_required
+def subscribe(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        try:
+            user_to_subscribe = User.objects.get(username=username)
+            # Перевірка, чи вже існує запит або підписка
+            if not Subscription.objects.filter(subscriber=request.user, subscribed_to=user_to_subscribe).exists():
+                # Створення нового запиту на підписку
+                Subscription.objects.create(subscriber=request.user, subscribed_to=user_to_subscribe, confirmed=False)
+                return render(request, 'notes/profile.html', {'message': f'Запит на підписку на {username} надіслано!'})
+            else:
+                return render(request, 'notes/profile.html', {'error': 'Ви вже підписані або запит надіслано.'})
+        except User.DoesNotExist:
+            return render(request, 'notes/profile.html', {'error': 'Користувача не знайдено.'})
+    return redirect('profile')
+
+@login_required
+def view_subscriptions(request):
+    subscriptions = Subscription.objects.filter(subscriber=request.user, confirmed=True)
+    return render(request, 'notes/subscriptions.html', {'subscriptions': subscriptions})
+
+@login_required
+def view_subscription_requests(request):
+    requests = Subscription.objects.filter(subscribed_to=request.user, confirmed=False)
+    return render(request, 'notes/subscription_requests.html', {'requests': requests})
+
+@login_required
+def confirm_subscription(request, subscription_id):
+    subscription = get_object_or_404(Subscription, id=subscription_id, subscribed_to=request.user)
+    subscription.confirmed = True
+    subscription.save()
+    return redirect('view_subscription_requests')
+
+@login_required
+def cancel_subscription(request, subscription_id):
+    subscription = get_object_or_404(Subscription, id=subscription_id, subscribed_to=request.user)
+    subscription.delete()
+    return redirect('view_subscription_requests')
+
+@login_required
+def view_user_notes(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    notes = Note.objects.filter(user=user, is_deleted=False)
+    return render(request, 'notes/user_notes.html', {'notes': notes, 'user': user})

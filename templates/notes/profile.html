@@ -1,6 +1,25 @@
 {% extends 'notes/base.html' %}
 {% block content %}
-  <h1>Привіт, {{ user.username }}!</h1>
-  <p>Це твій особистий кабінет.</p>
-  <a href="{% url 'logout' %}">Вийти</a>
+<div class="container flex justify-center items-center min-h-screen">
+  <h1 class="text-center">Привіт, {{ user.username }}!</h1>
+  <p class="text-center">Це твій особистий кабінет.</p>
+  <img src="{{ user.profile.photo.url }}" alt="Фото користувача" class="rounded-full mx-auto mb-4"
+    style="max-width: 150px; max-height: 150px;">
+  <a href="{% url 'view_subscriptions' %}" class="btn">Мої підписки</a>
+  <a href="{% url 'view_subscription_requests' %}" class="btn">Запити на підписку</a>
+  <form method="post" enctype="multipart/form-data" action="{% url 'upload_photo' %}" class="form-group">
+    {% csrf_token %}
+    <label for="photo">Завантажити фото:</label>
+    <input type="file" name="photo" id="photo" accept="image/*" class="form-control">
+    <button type="submit" class="btn">Завантажити</button>
+  </form>
+  <h2 class="text-center">Підписка на інших користувачів</h2>
+  <form method="post" action="{% url 'subscribe' %}" class="form-group">
+    {% csrf_token %}
+    <label for="username">Ім'я користувача:</label>
+    <input type="text" name="username" id="username" required class="form-control">
+    <button type="submit" class="btn">Підписатися</button>
+  </form>
+  <a href="{% url 'logout' %}" class="btn">Вийти</a>
+</div>
 {% endblock %}

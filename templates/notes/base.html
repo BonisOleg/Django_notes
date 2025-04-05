@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="uk">
+
 <head>
   <meta charset="UTF-8">
   <title>Мої нотатки</title>
@@ -11,7 +12,32 @@
   <link rel="stylesheet" href="{% static 'notes/style.css' %}">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
+
 <body>
+
+  <style>
+    body {
+      padding-top: 70px;
+      margin: 0;
+    }
+
+    .container {
+      margin-top: 75px;
+    }
+
+    .content {
+      padding-top: 75px;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background-color: #f8b500;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+  </style>
 
   <!-- Навігаційне меню -->
   <header>
@@ -21,19 +47,23 @@
         <li><a href="{% url 'note_list' %}">Додати нотатку</a></li>
 
         {% if user.is_authenticated %}
-          <li>
-            <form action="{% url 'logout' %}" method="post" style="display: inline;">
-              {% csrf_token %}
-              <button type="submit" class="menu-btn-link">Вийти</button>
-            </form>
-          </li>
+        <li><a href="{% url 'profile' %}">Особистий кабінет</a></li>
+        <li><a href="{% url 'trash' %}">Корзина</a></li>
+        <li>
+          <form action="{% url 'logout' %}" method="post" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="menu-btn-link">Вийти</button>
+          </form>
+        </li>
         {% else %}
-          <li><a href="{% url 'auth_choice' %}">Реєстрація/вхід</a></li>
+        <li><a href="{% url 'auth_choice' %}">Реєстрація/вхід</a></li>
         {% endif %}
       </ul>
     </nav>
   </header>
 
   {% block content %}{% endblock %}
+
 </body>
+
 </html>

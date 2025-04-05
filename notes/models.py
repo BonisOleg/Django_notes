@@ -18,3 +18,18 @@ class Note(models.Model):
     folder = models.ForeignKey(Folder, on_delete=models.SET_NULL, null=True, blank=True)
     def __str__(self):
         return self.title
+
+class Subscription(models.Model):
+    subscriber = models.ForeignKey(User, related_name='subscriptions', on_delete=models.CASCADE)
+    subscribed_to = models.ForeignKey(User, related_name='subscribers', on_delete=models.CASCADE)
+    confirmed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.subscriber} підписаний на {self.subscribed_to}'
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    photo = models.ImageField(upload_to='profile_photos/', blank=True, null=True)
+
+    def __str__(self):
+        return self.user.username

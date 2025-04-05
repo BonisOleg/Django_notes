@@ -1,0 +1,18 @@
+{% extends 'notes/base.html' %}
+{% block content %}
+<div class="container">
+    <h1>Запити на підписку</h1>
+    <ul>
+        {% for request in requests %}
+        <li>
+            {{ request.subscriber.username }}
+            <a href="{% url 'confirm_subscription' request.id %}" class="btn">Підтвердити</a>
+            <a href="{% url 'cancel_subscription' request.id %}" class="btn danger">Відхилити</a>
+        </li>
+        {% empty %}
+        <p>Немає запитів на підписку.</p>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'profile' %}" class="btn">Назад до профілю</a>
+</div>
+{% endblock %}

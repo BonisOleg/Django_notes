@@ -170,9 +170,13 @@ $(document).ready(function () {
   // ===== ПАПКИ: видалення та редагування =====
   let currentFolderId = null;
 
-  $(document).on('click', '.delete-folder', function () {
+  $(document).on('click', '.delete-folder', function (e) {
+    e.preventDefault();
     currentFolderId = $(this).data('id');
-    $('#delete-folder-modal').fadeIn();
+    const modal = $('#delete-folder-modal');
+
+    // Показуємо модальне вікно
+    modal.css('display', 'flex');
   });
 
   $('#delete-folder-only').click(function () {
@@ -193,21 +197,85 @@ $(document).ready(function () {
 
   // Закрити модалку при кліку поза нею
   $(document).mouseup(function (e) {
-    const modal = $('#delete-folder-modal .modal-content');
-    if (!modal.is(e.target) && modal.has(e.target).length === 0) {
-      $('#delete-folder-modal').fadeOut();
+    const modal = $('#delete-folder-modal');
+    const modalContent = modal.find('.modal-content');
+    if (!modalContent.is(e.target) && modalContent.has(e.target).length === 0) {
+      modal.fadeOut();
     }
   });
 
-  // Редагування назви папки
-  $(document).on('click', '.rename-folder', function () {
-    const id = $(this).data('id');
-    const title = $(`.folder-title[data-id="${id}"]`);
-    const newName = title.text().trim();
+  $('.close-modal').click(function () {
+    $('#delete-folder-modal').fadeOut();
+  });
 
-    $.post(`/notes/rename_folder/${id}/`, {
-      new_name: newName
+  // Редагування назви папки
+  let currentFolderForRename = null;
+
+  $(document).on('click', '.rename-folder', function (e) {
+    e.preventDefault();
+    currentFolderForRename = $(this).data('id');
+    const folderTitle = $(`.folder-title[data-id="${currentFolderForRename}"]`);
+    const currentName = folderTitle.text().trim();
+
+    // Показуємо модальне вікно і встановлюємо поточну назву
+    const modal = $('#rename-folder-modal');
+    $('#new-folder-name').val(currentName);
+    modal.css('display', 'flex');
+  });
+
+  // Зберігання нової назви
+  $('#save-folder-name').click(function () {
+    const newName = $('#new-folder-name').val().trim();
+
+    if (!newName) {
+      alert('Назва папки не може бути порожньою');
+      return;
+    }
+
+    $.ajax({
+      type: 'POST',
+      url: `/notes/rename_folder/${currentFolderForRename}/`,
+      data: {
+        new_name: newName
+      },
+      success: function (response) {
+        if (response.success) {
+          // Оновлюємо назву в DOM
+          $(`.folder-title[data-id="${currentFolderForRename}"]`).text(newName);
+
+          // Закриваємо модальне вікно
+          $('#rename-folder-modal').fadeOut();
+
+          // Показуємо повідомлення про успіх
+          const folderBlock = $(`.folder-block[data-folder-id="${currentFolderForRename}"]`);
+          folderBlock.append('<div class="success-message">Назву змінено!</div>');
+          setTimeout(() => {
+            folderBlock.find('.success-message').fadeOut(function () {
+              $(this).remove();
+            });
+          }, 2000);
+        } else {
+          alert('Не вдалося змінити назву папки');
+        }
+      },
+      error: function () {
+        alert('Помилка при зміні назви папки');
+      }
     });
+  });
+
+  // Закриття модального вікна редагування
+  $(document).on('click', '#rename-folder-modal .close-modal', function () {
+    $('#rename-folder-modal').fadeOut();
+  });
+
+  // Закриття модального вікна при кліку поза ним
+  $(document).mouseup(function (e) {
+    const modal = $('#rename-folder-modal');
+    const modalContent = modal.find('.modal-content');
+    if (!modalContent.is(e.target) && modalContent.has(e.target).length === 0) {
+      modal.fadeOut();
+    }
   });
 
   // Перехід у папку при кліку на назву

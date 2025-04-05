@@ -3,51 +3,52 @@
 {% load tz %}
 
 {% block head %}
-  <title>Корзина нотаток</title>
-  <meta name="csrf-token" content="{{ csrf_token }}">
-  <link rel="stylesheet" href="{% static 'notes/style.css' %}">
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<title>Корзина нотаток</title>
+<meta name="csrf-token" content="{{ csrf_token }}">
+<link rel="stylesheet" href="{% static 'notes/style.css' %}">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 {% endblock %}
 
 {% block content %}
-  <div class="container">
-    <h1>Корзина</h1>
+<div class="container">
+  <h1>Корзина</h1>
 
-    {% if user.is_authenticated %}
-      <!-- Кнопки масових дій -->
-      <div class="actions">
-        <button class="btn restore-all">Відновити всі</button>
-        <button class="btn danger delete-all">Видалити всі назавжди</button>
-      </div>
-
-      <hr>
-
-      <!-- Список видалених нотаток -->
-      <div class="note-list" id="trash-list">
-        {% for note in notes %}
-          <div class="note-block deleted" data-id="{{ note.pk }}" id="note-{{ note.pk }}">
-            <h2>{{ note.title }}</h2>
-            <p>{{ note.text|linebreaks }}</p>
-
-            {% if note.note_footer %}
-              <p class="footer"><em>{{ note.note_footer }}</em></p>
-            {% endif %}
-
-            <p class="footer small">Створено: {{ note.created_at|localtime|date:"d.m.Y H:i" }}</p>
-
-            <div class="actions">
-              <button class="btn small restore-note">Відновити</button>
-              <button class="btn small danger delete-note">Видалити назавжди</button>
-            </div>
-          </div>
-        {% empty %}
-          <p>Корзина порожня.</p>
-        {% endfor %}
-      </div>
-    {% else %}
-      <p style="text-align: center; margin-top: 40px; font-size: 18px;">Щоб переглядати корзину, будь ласка, <a href="{% url 'register' %}" class="btn">Зареєструйтесь</a> або <a href="{% url 'login' %}" class="btn">увійдіть</a>.</p>
-    {% endif %}
+  {% if user.is_authenticated %}
+  <!-- Кнопки масових дій -->
+  <div class="actions">
+    <button class="btn restore-all">Відновити всі</button>
+    <button class="btn danger delete-all">Видалити всі назавжди</button>
   </div>
 
-  <script src="{% static 'notes/scripts.js' %}"></script>
+  <hr>
+
+  <!-- Список видалених нотаток -->
+  <div class="note-list" id="trash-list">
+    {% for note in notes %}
+    <div class="note-block deleted" data-id="{{ note.pk }}" id="note-{{ note.pk }}">
+      <h2>{{ note.title }}</h2>
+      <p>{{ note.text|linebreaks }}</p>
+
+      {% if note.note_footer %}
+      <p class="footer"><em>{{ note.note_footer }}</em></p>
+      {% endif %}
+
+      <p class="footer small">Створено: {{ note.created_at|localtime|date:"d.m.Y H:i" }}</p>
+
+      <div class="actions">
+        <button class="btn small restore-note">Відновити</button>
+        <button class="btn small danger delete-note">Видалити назавжди</button>
+      </div>
+    </div>
+    {% empty %}
+    <p>Корзина порожня.</p>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p style="text-align: center; font-size: 18px;">Щоб переглядати корзину, будь ласка, <a href="{% url 'register' %}"
+      class="btn">Зареєструйтесь</a> або <a href="{% url 'login' %}" class="btn">увійдіть</a>.</p>
+  {% endif %}
+</div>
+
+<script src="{% static 'notes/scripts.js' %}"></script>
 {% endblock %}
