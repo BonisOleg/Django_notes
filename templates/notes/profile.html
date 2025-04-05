@@ -1,25 +1,60 @@
 {% extends 'notes/base.html' %}
 {% block content %}
-<div class="container flex justify-center items-center min-h-screen">
-  <h1 class="text-center">Привіт, {{ user.username }}!</h1>
-  <p class="text-center">Це твій особистий кабінет.</p>
-  <img src="{{ user.profile.photo.url }}" alt="Фото користувача" class="rounded-full mx-auto mb-4"
-    style="max-width: 150px; max-height: 150px;">
-  <a href="{% url 'view_subscriptions' %}" class="btn">Мої підписки</a>
-  <a href="{% url 'view_subscription_requests' %}" class="btn">Запити на підписку</a>
-  <form method="post" enctype="multipart/form-data" action="{% url 'upload_photo' %}" class="form-group">
-    {% csrf_token %}
-    <label for="photo">Завантажити фото:</label>
-    <input type="file" name="photo" id="photo" accept="image/*" class="form-control">
-    <button type="submit" class="btn">Завантажити</button>
-  </form>
-  <h2 class="text-center">Підписка на інших користувачів</h2>
-  <form method="post" action="{% url 'subscribe' %}" class="form-group">
-    {% csrf_token %}
-    <label for="username">Ім'я користувача:</label>
-    <input type="text" name="username" id="username" required class="form-control">
-    <button type="submit" class="btn">Підписатися</button>
-  </form>
-  <a href="{% url 'logout' %}" class="btn">Вийти</a>
+<div class="profile-container">
+  <div class="profile-header">
+    <img src="{{ user.profile.photo.url|default:'/static/notes/default-avatar.png' }}" alt="Фото користувача"
+      class="profile-photo">
+    <div class="profile-info">
+      <h1>{{ user.username }}</h1>
+      <p>Учасник з {{ user.date_joined|date:"d.m.Y" }}</p>
+    </div>
+  </div>
+
+  <div class="profile-actions">
+    <!-- Картка підписок -->
+    <div class="profile-card">
+      <h3>Мої підписки</h3>
+      <p>Переглядайте нотатки інших користувачів</p>
+      <a href="{% url 'view_subscriptions' %}" class="btn">Переглянути підписки</a>
+    </div>
+
+    <!-- Картка запитів на підписку -->
+    <div class="profile-card">
+      <h3>Запити на підписку</h3>
+      <p>Керуйте запитами від інших користувачів</p>
+      <a href="{% url 'view_subscription_requests' %}" class="btn">Переглянути запити</a>
+    </div>
+
+    <!-- Картка завантаження фото -->
+    <div class="profile-card">
+      <h3>Змінити фото профілю</h3>
+      <form method="post" enctype="multipart/form-data" action="{% url 'upload_photo' %}" class="photo-upload-form">
+        {% csrf_token %}
+        <label for="photo">
+          Обрати фото
+          <input type="file" name="photo" id="photo" accept="image/*">
+        </label>
+        <button type="submit">Завантажити</button>
+      </form>
+    </div>
+
+    <!-- Картка підписки на користувача -->
+    <div class="profile-card">
+      <h3>Підписатися на користувача</h3>
+      <form method="post" action="{% url 'subscribe' %}" class="subscription-form">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Введіть ім'я користувача" required>
+        <button type="submit">Підписатися</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Кнопка виходу -->
+  <div style="text-align: center; margin-top: 40px;">
+    <form action="{% url 'logout' %}" method="post" style="display: inline;">
+      {% csrf_token %}
+      <button type="submit" class="btn danger">Вийти з акаунту</button>
+    </form>
+  </div>
 </div>
 {% endblock %}

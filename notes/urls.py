@@ -39,4 +39,5 @@ urlpatterns = [
     path('confirm_subscription/<int:subscription_id>/', views.confirm_subscription, name='confirm_subscription'),
     path('cancel_subscription/<int:subscription_id>/', views.cancel_subscription, name='cancel_subscription'),
     path('user_notes/<int:user_id>/', views.view_user_notes, name='view_user_notes'),
+    path('unsubscribe/<int:user_id>/', views.unsubscribe, name='unsubscribe'),
 ]

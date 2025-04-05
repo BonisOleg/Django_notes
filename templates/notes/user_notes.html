@@ -1,17 +1,38 @@
 {% extends 'notes/base.html' %}
 {% block content %}
-<div class="container">
-    <h1>Нотатки користувача {{ user.username }}</h1>
-    <ul>
+<div class="subscriptions-container">
+    <div class="subscriptions-header">
+        <h1>Нотатки користувача {{ user.username }}</h1>
+        <p>Публічні нотатки, якими поділився користувач</p>
+    </div>
+
+    {% if notes %}
+    <div class="user-notes-grid">
         {% for note in notes %}
-        <li>
-            <h2>{{ note.title }}</h2>
-            <p>{{ note.text|linebreaks }}</p>
-        </li>
-        {% empty %}
-        <p>У цього користувача немає нотаток.</p>
+        <div class="user-note-card">
+            <div class="note-header">
+                <h3>{{ note.title }}</h3>
+                <span class="created-at">{{ note.created_at|date:"d.m.Y H:i" }}</span>
+            </div>
+            <div class="note-content">
+                {{ note.text|linebreaks }}
+            </div>
+            {% if note.note_footer %}
+            <div class="note-footer">
+                <em>{{ note.note_footer }}</em>
+            </div>
+            {% endif %}
+        </div>
         {% endfor %}
-    </ul>
-    <a href="{% url 'view_subscriptions' %}" class="btn">Назад до підписок</a>
+    </div>
+    {% else %}
+    <div class="subscription-empty">
+        <p>У цього користувача поки немає публічних нотаток</p>
+    </div>
+    {% endif %}
+
+    <div class="back-to-profile">
+        <a href="{% url 'view_subscriptions' %}" class="btn">← Назад до підписок</a>
+    </div>
 </div>
 {% endblock %}

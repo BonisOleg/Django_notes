@@ -1,19 +1,76 @@
 {% extends 'notes/base.html' %}
 {% block content %}
-<div class="container">
-    <h1 class="text-2xl font-bold mb-4">Мої підписки</h1>
-    <ul class="list-none">
-        {% for subscription in subscriptions %}
-        <li class="flex items-center mb-4 bg-gray-100 p-4 rounded-lg shadow-md">
-            <img src="{{ subscription.subscribed_to.profile.photo.url }}" alt="Фото користувача"
-                style="width: 150px; height: 150px; object-fit: cover;" class="rounded-full mr-4">
-            <a href="{% url 'view_user_notes' subscription.subscribed_to.id %}"
-                class="text-lg font-semibold hover:underline">{{ subscription.subscribed_to.username }}</a>
-        </li>
-        {% empty %}
-        <p>У вас немає підписок.</p>
-        {% endfor %}
-    </ul>
-    <a href="{% url 'profile' %}" class="btn mt-4">Назад до профілю</a>
+<div class="subscriptions-container">
+    <div class="subscriptions-header">
+        <h1>Мої підписки</h1>
+        <p>Користувачі, на яких ви підписані</p>
+    </div>
+
+    {% if subscriptions %}
+    {% for subscription in subscriptions %}
+    <div class="subscription-card" data-subscription-id="{{ subscription.subscribed_to.id }}">
+        <img src="{{ subscription.subscribed_to.profile.photo.url|default:'/static/notes/default-avatar.png' }}"
+            alt="Фото користувача" class="subscription-photo">
+        <div class="subscription-info">
+            <h3>{{ subscription.subscribed_to.username }}</h3>
+        </div>
+        <div class="subscription-actions">
+            <a href="{% url 'view_user_notes' subscription.subscribed_to.id %}" class="btn">Переглянути нотатки</a>
+            <button class="btn danger unsubscribe-btn">Відписатися</button>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <div class="subscription-empty">
+        <p>У вас поки немає підписок</p>
+    </div>
+    {% endif %}
+
+    <div class="back-to-profile">
+        <a href="{% url 'profile' %}" class="btn">← Назад до профілю</a>
+    </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        $('.unsubscribe-btn').click(function () {
+            const card = $(this).closest('.subscription-card');
+            const userId = card.data('subscription-id');
+
+            if (confirm('Ви дійсно хочете відписатися від цього користувача?')) {
+                $.ajax({
+                    url: `/notes/unsubscribe/${userId}/`,
+                    type: 'POST',
+                    headers: {
+                        'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            card.fadeOut(300, function () {
+                                $(this).remove();
+                                if ($('.subscription-card').length === 0) {
+                                    $('.subscriptions-container').html(`
+                                    <div class="subscriptions-header">
+                                        <h1>Мої підписки</h1>
+                                        <p>Користувачі, на яких ви підписані</p>
+                                    </div>
+                                    <div class="subscription-empty">
+                                        <p>У вас поки немає підписок</p>
+                                    </div>
+                                    <div class="back-to-profile">
+                                        <a href="{% url 'profile' %}" class="btn">← Назад до профілю</a>
+                                    </div>
+                                `);
+                                }
+                            });
+                        }
+                    },
+                    error: function () {
+                        alert('Помилка при відписці. Спробуйте пізніше.');
+                    }
+                });
+            }
+        });
+    });
+</script>
 {% endblock %}

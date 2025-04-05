@@ -241,3 +241,15 @@ def return_note_from_folder(request, note_id):
         note.save()
         return JsonResponse({'success': True})
     return JsonResponse({'success': False})
+
+@login_required
+def unsubscribe(request, user_id):
+    if request.method == 'POST':
+        subscription = get_object_or_404(
+            Subscription, 
+            subscriber=request.user,
+            subscribed_to_id=user_id
+        )
+        subscription.delete()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False})
