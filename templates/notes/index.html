@@ -4,18 +4,16 @@
 {% block head %}
 <meta name="csrf-token" content="{{ csrf_token }}">
 <title>Мої нотатки</title>
-<link rel="stylesheet" href="{% static 'notes/style.css' %}">
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 {% endblock %}
 
 {% block content %}
-<div class="container flex justify-center items-center mt-8">
+<div class="container">
   <h1>Мої нотатки</h1>
 
   {% if guest %}
   <div class="guest-container">
     <p>Щоб створювати нотатки, будь ласка, авторизуйтесь:</p>
-    <a href="{% url 'auth_choice' %}" class="btn large">Зареєструватися або увійти</a>
+    <a href="{% url 'auth_choice' %}" class="btn primary large">Зареєструватися або увійти</a>
   </div>
   {% else %}
   <!-- Форма створення нотатки -->
@@ -27,10 +25,10 @@
     <div class="field-group">
       <input type="text" name="note_footer" placeholder="Примітка">
     </div>
-    <div class="field-group" style="grid-column: span 2;">
+    <div class="field-group full-width">
       <textarea name="text" placeholder="Текст" rows="4" required></textarea>
     </div>
-    <button type="submit">Додати</button>
+    <button type="submit" class="btn primary">Додати</button>
   </form>
 
   <!-- Форма створення папки -->
@@ -39,21 +37,22 @@
       {% csrf_token %}
       <div class="folder-input-container">
         <input type="text" name="folder_name" placeholder="Назва нової папки" required>
-        <button type="submit" class="btn">Створити папку</button>
+        <button type="submit" class="btn primary">Створити папку</button>
       </div>
     </form>
   </div>
 
   <!-- Папки -->
   {% if folders %}
+  <h2>Папки</h2>
   <div class="folders-grid">
     {% for folder in folders %}
     <div class="folder-block dropzone" data-folder-id="{{ folder.id }}">
       <a href="{% url 'folder_detail' folder.id %}">
-        <h3 class="folder-title" contenteditable="true" data-id="{{ folder.id }}">{{ folder.name }}</h3>
+        <h3>{{ folder.name }}</h3>
       </a>
       <div class="folder-controls">
-        <button class="btn small rename-folder" data-id="{{ folder.id }}">Змінити назву</button>
+        <button class="btn small secondary rename-folder" data-id="{{ folder.id }}">Змінити назву</button>
         <button class="btn small danger delete-folder" data-id="{{ folder.id }}">Видалити</button>
       </div>
     </div>
@@ -65,23 +64,29 @@
   <hr>
 
   <!-- Список нотаток -->
+  {% if not guest %}
+  <h2>Нотатки без папки</h2>
   <div class="note-list">
-    {% for note in notes %}
+    {% with notes_without_folder=notes|default:"" %}{# Запобігаємо помилці, якщо notes не передано #}
+    {% for note in notes_without_folder %}
+    {% if not note.folder %}
     {% include 'notes/note_item.html' %}
+    {% endif %}
     {% empty %}
-    <p>Немає нотаток.</p>
+    <p>Немає нотаток без папки.</p>
     {% endfor %}
+    {% endwith %}
   </div>
+  {% endif %}
 </div>
 
 <!-- Модальне вікно підтвердження видалення папки -->
 <div id="delete-folder-modal" class="modal" style="display:none;">
   <div class="modal-content">
     <h2>Видалити папку</h2>
-    <p>Виберіть режим видалення:</p>
+    <p>Нотатки в цій папці також будуть переміщені до кошика.</p>
     <div class="modal-buttons">
-      <button class="btn danger" id="delete-folder-with-notes">Папку з нотатками</button>
-      <button class="btn" id="delete-folder-only">Лише папку</button>
+      <button class="btn danger" id="delete-folder-confirm">Видалити папку</button>
       <button class="btn secondary close-modal">Скасувати</button>
     </div>
   </div>
@@ -92,7 +97,7 @@
   <div class="modal-content">
     <h2>Змінити назву папки</h2>
     <div class="modal-input-container">
-      <input type="text" id="new-folder-name" placeholder="Нова назва папки" class="form-control">
+      <input type="text" id="new-folder-name" placeholder="Нова назва папки">
     </div>
     <div class="modal-buttons">
       <button class="btn primary" id="save-folder-name">Зберегти</button>
@@ -101,5 +106,20 @@
   </div>
 </div>
 
-<script src="{% static 'notes/scripts.js' %}"></script>
+<!-- Модальне вікно для додавання нотатки в папку -->
+<div id="add-to-folder-modal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h2>Додати у папку</h2>
+    <p>Виберіть папку, до якої перемістити нотатку:</p>
+    <select id="folder-select" name="folder_id">
+      <option value="" disabled selected>-- Виберіть папку --</option>
+    </select>
+    <div class="modal-buttons">
+      <button class="btn primary" id="move-note-confirm">Перемістити</button>
+      <button class="btn secondary close-modal">Скасувати</button>
+    </div>
+    <input type="hidden" id="note-to-move-id" value="">
+  </div>
+</div>
+
 {% endblock %}

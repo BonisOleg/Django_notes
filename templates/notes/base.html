@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="uk" {% block html_attrs %}{% endblock %}>
 
 <head>
   <meta charset="UTF-8">
@@ -11,48 +11,31 @@
 
   <link rel="stylesheet" href="{% static 'notes/style.css' %}">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  {% block head %}{% endblock %}
 </head>
 
-<body>
-
-  <style>
-    body {
-      padding-top: 70px;
-      margin: 0;
-    }
-
-    .container {
-      margin-top: 75px;
-    }
-
-    .content {
-      padding-top: 75px;
-    }
-
-    header {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      background-color: #f8b500;
-      z-index: 1000;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-  </style>
+<body {% block body_attrs %}{% endblock %}>
 
   <!-- Навігаційне меню -->
   <header>
     <div class="header-left">
       {% if user.is_authenticated %}
-      <img src="{{ user.profile.photo.url|default:'/static/notes/default-avatar.png' }}" alt="Фото"
-        class="header-avatar">
+      <a href="{% url 'profile' %}">
+        <img src="{{ user.profile.photo.url|default:'/static/notes/default-avatar.png' }}" alt="Фото"
+          class="header-avatar">
+      </a>
       {% endif %}
       <nav>
         <ul class="menu">
-          <li><a href="{% url 'main_home' %}">Головна</a></li>
-          <li><a href="{% url 'note_list' %}">Мої нотатки</a></li>
+          <li><a href="{% url 'main_home' %}"
+              class="{% if request.resolver_match.url_name == 'main_home' %}active{% endif %}">Головна</a></li>
+          <li><a href="{% url 'note_list' %}"
+              class="{% if request.resolver_match.url_name == 'note_list' %}active{% endif %}">Мої нотатки</a></li>
           {% if user.is_authenticated %}
-          <li><a href="{% url 'profile' %}">Особистий кабінет</a></li>
-          <li><a href="{% url 'trash' %}">Корзина</a></li>
+          <li><a href="{% url 'profile' %}"
+              class="{% if request.resolver_match.url_name == 'profile' %}active{% endif %}">Особистий кабінет</a></li>
+          <li><a href="{% url 'trash' %}"
+              class="{% if request.resolver_match.url_name == 'trash' %}active{% endif %}">Корзина</a></li>
           <li>
             <form action="{% url 'logout' %}" method="post" style="display: inline;">
               {% csrf_token %}
@@ -60,7 +43,9 @@
             </form>
           </li>
           {% else %}
-          <li><a href="{% url 'auth_choice' %}">Реєстрація/вхід</a></li>
+          <li><a href="{% url 'auth_choice' %}"
+              class="{% if request.resolver_match.url_name == 'auth_choice' %}active{% endif %}">Реєстрація/вхід</a>
+          </li>
           {% endif %}
         </ul>
       </nav>
@@ -72,7 +57,7 @@
       <!-- Поле пошуку -->
       <div class="search-container">
         <input type="text" id="search-input" placeholder="Пошук нотаток...">
-        <button id="search-button" class="btn small">Знайти</button>
+        <button id="search-button" class="btn small secondary">Знайти</button>
       </div>
     </div>
   </header>
@@ -83,7 +68,7 @@
   <div id="search-results-modal" class="modal" style="display:none;">
     <div class="modal-content large">
       <h2>Результати пошуку</h2>
-      <div id="search-results-list">
+      <div id="search-results-list" style="max-height: 60vh; overflow-y: auto; margin: 20px 0;">
         <!-- Результати будуть вставлені сюди -->
       </div>
       <div class="modal-buttons">
@@ -91,6 +76,10 @@
       </div>
     </div>
   </div>
+
+  {% block scripts %}
+  <script src="{% static 'notes/scripts.js' %}"></script>
+  {% endblock %}
 
 </body>
 

@@ -1,36 +1,42 @@
 {% extends 'notes/base.html' %}
 {% load static %}
 {% block content %}
-<div class="subscriptions-container">
-    <div class="subscriptions-header">
+<div class="container requests-page">
+    <div class="page-header">
         <h1>Запити на підписку</h1>
         <p>Користувачі, які хочуть підписатися на вас</p>
     </div>
 
     {% if requests %}
-    {% for request in requests %}
-    <div class="request-card">
-        <div class="request-info">
-            <img src="{{ request.subscriber.profile.photo.url|default:'/static/notes/default-avatar.png' }}"
-                alt="Фото користувача" class="request-photo">
-            <span class="request-username">{{ request.subscriber.username }}</span>
-        </div>
-        <div class="request-actions">
-            <a href="{% url 'confirm_subscription' request.id %}" class="btn accept">Підтвердити</a>
-            <a href="{% url 'cancel_subscription' request.id %}" class="btn danger">Відхилити</a>
-        </div>
-    </div>
-    {% endfor %}
+    <ul class="request-list">
+        {% for request in requests %}
+        <li class="request-item">
+            <div class="request-user-info">
+                <img src="{{ request.subscriber.profile.photo.url|default:'/static/notes/default-avatar.png' }}"
+                    alt="Фото {{ request.subscriber.username }}" class="user-avatar-small">
+                <span>{{ request.subscriber.username }}</span>
+            </div>
+            <div class="request-actions">
+                <form action="{% url 'confirm_subscription' request.id %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn small success">Підтвердити</button>
+                </form>
+                <form action="{% url 'cancel_subscription' request.id %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn small danger">Відхилити</button>
+                </form>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
     {% else %}
-    <div class="subscription-empty">
-        <p>Немає нових запитів на підписку</p>
+    <div class="no-requests">
+        <p>Немає нових запитів на підписку.</p>
     </div>
     {% endif %}
 
-    <div class="back-to-profile">
-        <a href="{% url 'profile' %}" class="btn">← Назад до профілю</a>
+    <div class="back-link-container">
+        <a href="{% url 'profile' %}" class="btn secondary">← Назад до профілю</a>
     </div>
 </div>
-
-<script src="{% static 'notes/scripts.js' %}"></script>
 {% endblock %}

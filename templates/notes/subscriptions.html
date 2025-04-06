@@ -1,36 +1,37 @@
 {% extends 'notes/base.html' %}
 {% load static %}
 {% block content %}
-<div class="subscriptions-container">
-    <div class="subscriptions-header">
+<div class="container subscriptions-page">
+    <div class="page-header">
         <h1>Мої підписки</h1>
         <p>Користувачі, на яких ви підписані</p>
     </div>
 
     {% if subscriptions %}
-    {% for subscription in subscriptions %}
-    <div class="subscription-card" data-subscription-id="{{ subscription.subscribed_to.id }}">
-        <img src="{{ subscription.subscribed_to.profile.photo.url|default:'/static/notes/default-avatar.png' }}"
-            alt="Фото користувача" class="subscription-photo">
-        <div class="subscription-info">
-            <h3>{{ subscription.subscribed_to.username }}</h3>
-        </div>
-        <div class="subscription-actions">
-            <a href="{% url 'view_user_notes' subscription.subscribed_to.id %}" class="btn">Переглянути нотатки</a>
-            <button class="btn danger unsubscribe-btn">Відписатися</button>
-        </div>
-    </div>
-    {% endfor %}
+    <ul class="subscription-list">
+        {% for subscription in subscriptions %}
+        <li class="subscription-item" data-subscription-id="{{ subscription.subscribed_to.id }}">
+            <div class="subscription-user-info">
+                <img src="{{ subscription.subscribed_to.profile.photo.url|default:'/static/notes/default-avatar.png' }}"
+                    alt="Фото {{ subscription.subscribed_to.username }}" class="user-avatar-small">
+                <span>{{ subscription.subscribed_to.username }}</span>
+            </div>
+            <div class="subscription-actions">
+                <a href="{% url 'view_user_notes' subscription.subscribed_to.id %}"
+                    class="btn small secondary">Переглянути</a>
+                <button class="btn small danger unsubscribe-btn">Відписатися</button>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
     {% else %}
-    <div class="subscription-empty">
-        <p>У вас поки немає підписок</p>
+    <div class="no-subscriptions">
+        <p>У вас поки немає підписок.</p>
     </div>
     {% endif %}
 
-    <div class="back-to-profile">
-        <a href="{% url 'profile' %}" class="btn">← Назад до профілю</a>
+    <div class="back-link-container">
+        <a href="{% url 'profile' %}" class="btn secondary">← Назад до профілю</a>
     </div>
 </div>
-
-<script src="{% static 'notes/scripts.js' %}"></script>
 {% endblock %}

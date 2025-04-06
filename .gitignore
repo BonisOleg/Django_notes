@@ -21,3 +21,22 @@ db.sqlite3
 # macOS / Windows
 .DS_Store
 Thumbs.db
+
+# Файл для збереження стану розмови з AI
+memory.mdc
+
+# Coverage reports
+.coverage
+htmlcov/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Temporary files
+*.tmp
+*~

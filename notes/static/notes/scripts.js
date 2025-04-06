@@ -15,12 +15,35 @@ $(document).ready(function () {
 
   // ====== Функції для модальних вікон ======
   function showModal(modal) {
-    modal.css('display', 'flex');
+    modal.css('display', 'flex').hide().fadeIn(200);
   }
 
   function hideModal(modal) {
-    modal.fadeOut();
+    modal.fadeOut(200);
   }
+
+  // Закриття всіх модалок при кліку на кнопку з класом .close-modal
+  $(document).on('click', '.close-modal', function () {
+    const modal = $(this).closest('.modal');
+    if (modal.length) {
+      hideModal(modal);
+    }
+  });
+
+  // Закриття модалки при кліку поза нею (універсальний обробник)
+  $(document).mouseup(function (e) {
+    $('.modal').each(function () {
+      const modal = $(this);
+      const modalContent = modal.find('.modal-content');
+      if (modal.is(':visible') && !modalContent.is(e.target) && modalContent.has(e.target).length === 0) {
+        // Проста перевірка, чи клік не по кнопці, що відкриває модалку
+        // Може знадобитися більш точна логіка для деяких випадків
+        // if (!$(e.target).closest('[data-modal-trigger]').length) {
+        hideModal(modal);
+        // }
+      }
+    });
+  });
 
   // ====== AJAX: створення нотатки ======
   $('#add-note-form').submit(function (e) {
@@ -28,6 +51,9 @@ $(document).ready(function () {
     const form = $(this);
     if (form.data('submitting')) return;
     form.data('submitting', true);
+    const submitButton = form.find('button[type="submit"]');
+    const originalButtonText = submitButton.text();
+    submitButton.text('Додавання...').prop('disabled', true);
 
     $.ajax({
       type: 'POST',
@@ -36,17 +62,21 @@ $(document).ready(function () {
       headers: { 'X-Requested-With': 'XMLHttpRequest' },
       success: function (response) {
         if (response.success) {
-          $('.note-list').prepend(response.note_html);
-          form[0].reset();
+          // Вставляємо нову нотатку
+          const noteList = $('.note-list');
+          noteList.prepend(response.note_html);
+          noteList.find('.note-block').first().hide().fadeIn(); // Плавне з'явлення нотатки
+          form[0].reset(); // Очищуємо форму
         } else {
-          alert('Не вдалося додати нотатку.');
+          alert('Не вдалося додати нотатку. ' + (response.error || ''));
         }
       },
       complete: function () {
         form.data('submitting', false);
+        submitButton.text(originalButtonText).prop('disabled', false);
       },
-      error: function () {
-        alert('Помилка при створенні нотатки.');
+      error: function (xhr) {
+        alert('Помилка при створенні нотатки: ' + xhr.statusText);
       }
     });
   });
@@ -57,6 +87,9 @@ $(document).ready(function () {
     const form = $(this);
     if (form.data('submitting')) return;
     form.data('submitting', true);
+    const submitButton = form.find('button[type="submit"]');
+    const originalButtonText = submitButton.text();
+    submitButton.text('Створення...').prop('disabled', true);
 
     $.ajax({
       type: 'POST',
@@ -64,14 +97,19 @@ $(document).ready(function () {
       data: form.serialize(),
       headers: { 'X-Requested-With': 'XMLHttpRequest' },
       success: function (response) {
-        if (response.success) location.reload();
-        else alert('Не вдалося створити папку.');
+        if (response.success) {
+          location.reload(); // Перезавантажуємо сторінку для оновлення списку папок
+        }
+        else {
+          alert('Не вдалося створити папку. ' + (response.error || ''));
+        }
       },
       complete: function () {
         form.data('submitting', false);
+        submitButton.text(originalButtonText).prop('disabled', false);
       },
-      error: function () {
-        alert('Сталася помилка при створенні папки.');
+      error: function (xhr) {
+        alert('Сталася помилка при створенні папки: ' + xhr.statusText);
       }
     });
   });
@@ -79,431 +117,529 @@ $(document).ready(function () {
   // ====== DRAG & DROP для нотаток ======
   let draggedNote = null;
 
+  // Використовуємо делегування подій для динамічно доданих нотаток
   $(document).on('dragstart', '.note-block', function (e) {
+    // Перевірка, чи елемент дійсно має бути перетягуваним (не в кошику)
+    if ($(this).closest('#trash-list').length > 0) {
+      e.preventDefault();
+      return;
+    }
     draggedNote = $(this);
     draggedNote.addClass('dragging');
-    e.originalEvent.dataTransfer.setData('note-id', draggedNote.data('id'));
+    // Встановлюємо дані для перетягування
+    if (e.originalEvent && e.originalEvent.dataTransfer) {
+      e.originalEvent.dataTransfer.setData('text/plain', draggedNote.data('id')); // Використовуємо 'text/plain'
+      e.originalEvent.dataTransfer.effectAllowed = 'move';
+    } else {
+      // Для старих браузерів або jQuery подій
+      e.originalEvent.dataTransfer.setData('note-id', draggedNote.data('id'));
+    }
 
+    // Невелике зменшення для візуального ефекту
     setTimeout(() => {
-      if (draggedNote) {
-        draggedNote.css({
-          transform: 'scale(0.33)',
-          opacity: '0.7'
-        });
+      if (draggedNote && draggedNote.hasClass('dragging')) {
+        draggedNote.css({ opacity: '0.7', transform: 'scale(0.95)' });
       }
     }, 0);
   });
 
   $(document).on('dragend', '.note-block', function () {
     const currentNote = $(this);
-    if (currentNote && currentNote.hasClass('dragging')) {
+    // Знімаємо стилі перетягування, якщо вони ще є
+    if (currentNote.hasClass('dragging')) {
       currentNote.removeClass('dragging');
-      currentNote.css({
-        transform: 'scale(1)',
-        opacity: '1'
-      });
+      currentNote.css({ opacity: '1', transform: 'scale(1)' });
     }
+    // Скидаємо класи drag-over з усіх папок
+    $('.folder-block.drag-over').removeClass('drag-over');
     draggedNote = null;
   });
 
-  $(document).on('dragover', '.folder-block', function (e) {
-    e.preventDefault();
+  $(document).on('dragover', '.folder-block.dropzone', function (e) {
+    e.preventDefault(); // Необхідно для спрацювання drop
+    e.stopPropagation();
+    if (e.originalEvent && e.originalEvent.dataTransfer) {
+      e.originalEvent.dataTransfer.dropEffect = 'move';
+    }
+    // Додаємо клас візуального фідбеку
     $(this).addClass('drag-over');
   });
 
-  $(document).on('dragleave', '.folder-block', function () {
+  $(document).on('dragleave', '.folder-block.dropzone', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    // Прибираємо клас візуального фідбеку
     $(this).removeClass('drag-over');
   });
 
-  $(document).on('drop', '.folder-block', function (e) {
+  $(document).on('drop', '.folder-block.dropzone', function (e) {
     e.preventDefault();
-    const folderId = $(this).data('folder-id');
-    const noteId = e.originalEvent.dataTransfer.getData('note-id');
-    $(this).removeClass('drag-over');
-    const originalNote = $(`.note-block[data-id="${noteId}"]`);
+    e.stopPropagation();
+    const folderBlock = $(this);
+    folderBlock.removeClass('drag-over'); // Прибираємо підсвітку
+
+    const folderId = folderBlock.data('folder-id');
+    const noteId = e.originalEvent.dataTransfer.getData('text/plain') || e.originalEvent.dataTransfer.getData('note-id'); // Отримуємо ID нотатки
+
+    if (!noteId || !folderId) {
+      console.error('Не вдалося отримати ID нотатки або папки.');
+      return;
+    }
+
+    const originalNoteElement = $(`.note-block[data-id="${noteId}"]`);
 
     $.ajax({
       type: 'POST',
-      url: '/notes/move_note_to_folder/',
+      url: '/notes/move_note_to_folder/', // Переконайся, що URL правильний
       data: {
         note_id: noteId,
         folder_id: folderId
       },
-      success: function () {
-        if (originalNote.length) {
-          originalNote.fadeOut(300, function () {
-            $(this).remove();
-          });
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
+      success: function (response) {
+        if (response.success) {
+          // Плавно приховуємо і видаляємо оригінальну нотатку
+          if (originalNoteElement.length) {
+            originalNoteElement.fadeOut(300, function () {
+              $(this).remove();
+            });
+          }
+          // Можна додати повідомлення про успіх або оновити лічильник нотаток у папці
+        } else {
+          alert('Не вдалося перемістити нотатку: ' + (response.error || 'Помилка сервера'));
+          // Повертаємо нотатку до нормального стану, якщо щось пішло не так
+          if (originalNoteElement.length) {
+            originalNoteElement.removeClass('dragging').css({ opacity: '1', transform: 'scale(1)' });
+          }
         }
       },
-      error: function () {
-        alert('Не вдалося перемістити нотатку в папку.');
-        if (originalNote.length) {
-          originalNote.removeClass('dragging');
-          originalNote.css({ transform: 'scale(1)', opacity: '1' });
+      error: function (xhr) {
+        alert('Помилка мережі при переміщенні нотатки: ' + xhr.statusText);
+        if (originalNoteElement.length) {
+          originalNoteElement.removeClass('dragging').css({ opacity: '1', transform: 'scale(1)' });
         }
       }
     });
   });
 
   // ====== КОРЗИНА ======
+  // Використовуємо делегування подій для кнопок у кошику
   $(document).on('click', '.restore-note', function () {
-    const block = $(this).closest('.note-block');
-    const noteId = block.data('id');
+    const noteBlock = $(this).closest('.note-block');
+    const noteId = noteBlock.data('id');
+    if (!noteId) return;
 
-    $.post(`/notes/trash/restore/${noteId}/`, {}, function () {
-      block.fadeOut(300, function () {
-        $(this).remove();
-        if ($('.note-block').length === 0) {
-          $('#trash-list').html('<p>Корзина порожня.</p>');
-        }
-      });
+    $.post(`/notes/trash/restore/${noteId}/`, {}, function (response) {
+      if (response.success) {
+        noteBlock.fadeOut(300, function () {
+          $(this).remove();
+          // Перевірка, чи кошик порожній
+          if ($('#trash-list .note-block').length === 0) {
+            $('#trash-list').html('<p class="subscription-empty">Корзина порожня.</p>'); // Використовуємо стиль .subscription-empty
+          }
+        });
+      } else {
+        alert('Не вдалося відновити нотатку.');
+      }
+    }).fail(function () {
+      alert('Помилка сервера при відновленні нотатки.');
     });
   });
 
   $(document).on('click', '.delete-note', function () {
-    const block = $(this).closest('.note-block');
-    const noteId = block.data('id');
+    const noteBlock = $(this).closest('.note-block');
+    const noteId = noteBlock.data('id');
+    if (!noteId) return;
 
-    $.post(`/notes/trash/delete_forever/${noteId}/`, {}, function () {
-      block.fadeOut(300, function () {
-        $(this).remove();
-        if ($('.note-block').length === 0) {
-          $('#trash-list').html('<p>Корзина порожня.</p>');
+    if (confirm('Ви впевнені, що хочете видалити цю нотатку назавжди?')) {
+      $.post(`/notes/trash/delete_forever/${noteId}/`, {}, function (response) {
+        if (response.success) {
+          noteBlock.fadeOut(300, function () {
+            $(this).remove();
+            if ($('#trash-list .note-block').length === 0) {
+              $('#trash-list').html('<p class="subscription-empty">Корзина порожня.</p>');
+            }
+          });
+        } else {
+          alert('Не вдалося видалити нотатку.');
         }
+      }).fail(function () {
+        alert('Помилка сервера при видаленні нотатки.');
       });
-    });
-  });
-
-  $(document).on('click', '.restore-all', function () {
-    $.post(`/notes/trash/restore_all/`, {}, function () {
-      $('#trash-list').fadeOut(300, function () {
-        $(this).html('<p>Усі нотатки відновлено.</p>').fadeIn();
-      });
-    });
-  });
-
-  $(document).on('click', '.delete-all', function () {
-    $.post(`/notes/trash/delete_all/`, {}, function () {
-      $('#trash-list').fadeOut(300, function () {
-        $(this).html('<p>Усі нотатки видалено назавжди.</p>').fadeIn();
-      });
-    });
-  });
-
-  // ====== ПАПКИ: видалення та редагування ======
-  let currentFolderId = null;
-
-  $(document).on('click', '.delete-folder', function (e) {
-    e.preventDefault();
-    currentFolderId = $(this).data('id');
-    showModal($('#delete-folder-modal'));
-  });
-
-  $('#delete-folder-only').click(function () {
-    sendFolderDelete('only_folder');
-  });
-
-  $('#delete-folder-with-notes').click(function () {
-    sendFolderDelete('with_notes');
-  });
-
-  function sendFolderDelete(type) {
-    $.post(`/notes/delete_folder/${currentFolderId}/`, {
-      action: type
-    }, function () {
-      location.reload();
-    });
-  }
-
-  // Закрити модалку при кліку поза нею
-  $(document).mouseup(function (e) {
-    const modal = $('#delete-folder-modal');
-    const modalContent = modal.find('.modal-content');
-    if (!modalContent.is(e.target) && modalContent.has(e.target).length === 0) {
-      hideModal(modal);
     }
   });
 
-  $('.close-modal').click(function () {
-    hideModal($('#delete-folder-modal'));
+  // Масові дії в кошику
+  $('.restore-all').click(function () {
+    if (confirm('Відновити всі нотатки з кошика?')) {
+      $.post(`/notes/trash/restore_all/`, {}, function (response) {
+        if (response.success) {
+          $('#trash-list').fadeOut(300, function () {
+            $(this).html('<p class="subscription-empty">Усі нотатки відновлено.</p>').fadeIn();
+          });
+        } else {
+          alert('Не вдалося відновити всі нотатки.');
+        }
+      }).fail(function () {
+        alert('Помилка сервера при відновленні всіх нотаток.');
+      });
+    }
   });
 
-  // Редагування назви папки
-  let currentFolderForRename = null;
+  $('.delete-all').click(function () {
+    if (confirm('Видалити всі нотатки з кошика назавжди? Цю дію неможливо скасувати.')) {
+      $.post(`/notes/trash/delete_all/`, {}, function (response) { // Використовуємо delete_all
+        if (response.success) {
+          $('#trash-list').fadeOut(300, function () {
+            $(this).html('<p class="subscription-empty">Усі нотатки видалено назавжди.</p>').fadeIn();
+          });
+        } else {
+          alert('Не вдалося видалити всі нотатки.');
+        }
+      }).fail(function () {
+        alert('Помилка сервера при видаленні всіх нотаток.');
+      });
+    }
+  });
 
+  // ====== ПАПКИ: видалення та редагування ======
+  let currentFolderIdToDelete = null;
+  let currentFolderIdToRename = null;
+
+  // Відкриття модалки видалення папки
+  $(document).on('click', '.delete-folder', function (e) {
+    e.preventDefault();
+    currentFolderIdToDelete = $(this).data('id');
+    if (currentFolderIdToDelete) {
+      showModal($('#delete-folder-modal'));
+    }
+  });
+
+  // Підтвердження видалення папки (нова логіка з однією кнопкою)
+  $('#delete-folder-confirm').click(function () {
+    if (!currentFolderIdToDelete) return;
+
+    $.post(`/notes/delete_folder/${currentFolderIdToDelete}/`, {
+      action: 'delete_with_notes' // Завжди видаляємо з нотатками
+    }, function (response) {
+      if (response.success) {
+        // Можна просто перезавантажити сторінку або видалити елемент папки
+        $(`.folder-block[data-folder-id="${currentFolderIdToDelete}"]`).fadeOut(300, function () {
+          $(this).remove();
+          hideModal($('#delete-folder-modal'));
+        });
+        // location.reload();
+      } else {
+        alert('Не вдалося видалити папку.');
+        hideModal($('#delete-folder-modal'));
+      }
+    }).fail(function () {
+      alert('Помилка сервера при видаленні папки.');
+      hideModal($('#delete-folder-modal'));
+    });
+  });
+
+  // Відкриття модалки перейменування папки
   $(document).on('click', '.rename-folder', function (e) {
     e.preventDefault();
-    currentFolderForRename = $(this).data('id');
-    const folderTitle = $(`.folder-title[data-id="${currentFolderForRename}"]`);
-    const currentName = folderTitle.text().trim();
+    currentFolderIdToRename = $(this).data('id');
+    // Знаходимо h3 всередині батьківського .folder-block
+    const folderBlock = $(this).closest('.folder-block');
+    const currentName = folderBlock.find('h3').text().trim();
 
-    // Показуємо модальне вікно і встановлюємо поточну назву
-    const modal = $('#rename-folder-modal');
-    $('#new-folder-name').val(currentName);
-    showModal(modal);
+    if (currentFolderIdToRename) {
+      $('#new-folder-name').val(currentName); // Встановлюємо поточну назву в інпут
+      showModal($('#rename-folder-modal'));
+    }
   });
 
-  // Зберігання нової назви
+  // Збереження нової назви папки
   $('#save-folder-name').click(function () {
     const newName = $('#new-folder-name').val().trim();
-
-    if (!newName) {
-      alert('Назва папки не може бути порожньою');
+    if (!newName || !currentFolderIdToRename) {
+      alert('Назва папки не може бути порожньою.');
       return;
     }
 
     $.ajax({
       type: 'POST',
-      url: `/notes/rename_folder/${currentFolderForRename}/`,
+      url: `/notes/rename_folder/${currentFolderIdToRename}/`,
       data: {
         new_name: newName
       },
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
       success: function (response) {
         if (response.success) {
-          // Оновлюємо назву в DOM
-          $(`.folder-title[data-id="${currentFolderForRename}"]`).text(newName);
-
-          // Закриваємо модальне вікно
+          // Оновлюємо назву папки в DOM
+          $(`.folder-block[data-folder-id="${currentFolderIdToRename}"]`).find('h3').text(newName);
           hideModal($('#rename-folder-modal'));
-
-          // Показуємо повідомлення про успіх
-          const folderBlock = $(`.folder-block[data-folder-id="${currentFolderForRename}"]`);
-          folderBlock.append('<div class="success-message">Назву змінено!</div>');
-          setTimeout(() => {
-            folderBlock.find('.success-message').fadeOut(function () {
-              $(this).remove();
-            });
-          }, 2000);
+          // Додаємо тимчасове повідомлення про успіх
+          // Можна використовувати більш витончений механізм сповіщень
+          console.log('Назву папки змінено!');
         } else {
-          alert('Не вдалося змінити назву папки');
+          alert('Не вдалося змінити назву папки. ' + (response.error || ''));
         }
       },
-      error: function () {
-        alert('Помилка при зміні назви папки');
+      error: function (xhr) {
+        alert('Помилка при зміні назви папки: ' + xhr.statusText);
       }
     });
   });
 
-  // Закриття модального вікна редагування
-  $(document).on('click', '#rename-folder-modal .close-modal', function () {
-    hideModal($('#rename-folder-modal'));
+  // ====== ПЕРЕМІЩЕННЯ НОТАТКИ В ПАПКУ (через модальне вікно) ======
+  let noteIdToMove = null;
+
+  // Відкриття модалки "Додати у папку"
+  $(document).on('click', '.add-to-folder', function (e) {
+    e.preventDefault();
+    noteIdToMove = $(this).data('note-id');
+    if (!noteIdToMove) return;
+
+    const modal = $('#add-to-folder-modal');
+    const select = $('#folder-select');
+    select.empty().append('<option value="" disabled selected>-- Завантаження папок... --</option>'); // Очищуємо і показуємо завантаження
+
+    // Робимо AJAX запит для отримання списку папок
+    $.ajax({
+      url: '/notes/get_folders/', // URL для отримання списку папок
+      type: 'GET',
+      success: function (response) {
+        if (response.folders && response.folders.length > 0) {
+          select.empty().append('<option value="" disabled selected>-- Виберіть папку --</option>'); // Очищуємо і додаємо плейсхолдер
+          response.folders.forEach(function (folder) {
+            select.append(new Option(folder.name, folder.id));
+          });
+          showModal(modal);
+        } else {
+          select.empty().append('<option value="" disabled selected>-- Немає доступних папок --</option>');
+          // Можна показати повідомлення, що папок немає, або приховати кнопку переміщення
+          alert('У вас немає створених папок для переміщення.');
+        }
+      },
+      error: function () {
+        alert('Не вдалося завантажити список папок.');
+        select.empty().append('<option value="" disabled selected>-- Помилка завантаження --</option>');
+      }
+    });
   });
 
-  // Закриття модального вікна при кліку поза ним
-  $(document).mouseup(function (e) {
-    const modal = $('#rename-folder-modal');
-    const modalContent = modal.find('.modal-content');
-    if (!modalContent.is(e.target) && modalContent.has(e.target).length === 0) {
-      hideModal(modal);
+  // Підтвердження переміщення нотатки
+  $('#move-note-confirm').click(function () {
+    const folderId = $('#folder-select').val();
+
+    if (!noteIdToMove || !folderId) {
+      alert('Будь ласка, виберіть папку.');
+      return;
     }
+
+    $.ajax({
+      type: 'POST',
+      url: '/notes/move_note_to_folder/', // Використовуємо той самий URL, що і для drag-n-drop
+      data: {
+        note_id: noteIdToMove,
+        folder_id: folderId
+      },
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
+      success: function (response) {
+        if (response.success) {
+          hideModal($('#add-to-folder-modal'));
+          // Приховуємо нотатку зі списку (якщо вона на поточній сторінці)
+          $(`.note-block[data-id="${noteIdToMove}"]`).fadeOut(300, function () { $(this).remove(); });
+          alert('Нотатку успішно переміщено.');
+          // Опціонально: оновити лічильники або перезавантажити частину сторінки
+        } else {
+          alert('Не вдалося перемістити нотатку: ' + (response.error || ''));
+        }
+      },
+      error: function (xhr) {
+        alert('Помилка мережі при переміщенні нотатки: ' + xhr.statusText);
+      }
+    });
   });
 
-  // Перехід у папку при кліку на назву
-  $(document).on('click', '.folder-title', function () {
-    const id = $(this).data('id');
-    window.location.href = `/notes/folder/${id}/`;
-  });
-
-  // Повернення нотатки з папки
+  // ====== ПОВЕРНЕННЯ НОТАТКИ З ПАПКИ ======
   $(document).on('click', '.return-from-folder', function (e) {
     e.preventDefault();
-    const noteId = $(this).data('note-id');
     const noteBlock = $(this).closest('.note-block');
+    const noteId = noteBlock.data('note-id'); // Перевіряємо атрибут data-note-id
+    if (!noteId) return;
 
     $.ajax({
       type: 'POST',
       url: `/notes/return_note_from_folder/${noteId}/`,
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
       success: function (response) {
         if (response.success) {
           noteBlock.fadeOut(300, function () {
             $(this).remove();
-            // Якщо це була остання нотатка в папці
-            if ($('.note-block').length === 0) {
-              $('.note-list').html('<p>У цій папці поки немає нотаток.</p>');
+            // Перевірка, чи папка порожня
+            if ($('.note-list .note-block').length === 0) {
+              $('.note-list').html('<p class="subscription-empty">У цій папці поки немає нотаток.</p>');
             }
           });
+        } else {
+          alert('Не вдалося повернути нотатку.');
         }
       },
-      error: function () {
-        alert('Помилка при поверненні нотатки з папки.');
+      error: function (xhr) {
+        alert('Помилка при поверненні нотатки з папки: ' + xhr.statusText);
       }
     });
   });
 
-  // ====== Розгортання тексту нотаток ======
+  // ====== РОЗГОРТАННЯ ТЕКСТУ НОТАТОК ======
   $(document).on('click', '.expand-btn', function () {
-    const content = $(this).siblings('.note-content');
+    const button = $(this);
+    const content = button.closest('.note-block').find('.note-content'); // Знаходимо контент відносно .note-block
+    if (!content.length) return;
+
     content.toggleClass('expanded');
-    $(this).text(content.hasClass('expanded') ? 'Показати менше' : 'Показати більше');
+    button.text(content.hasClass('expanded') ? 'Згорнути' : 'Показати більше');
   });
 
-  // Перевірка, чи це сторінка з привітанням
+  /* === Анімація кубів для сторінки привітання === */
   if ($('body').hasClass('welcome-page')) {
-    // Ініціалізація анімації кіл
-    const colors = [
-      ['#ff6b6b', '#c0392b'],
-      ['#4ecdc4', '#2c3e50'],
-      ['#1a535c', '#0f2027'],
-      ['#9b59b6', '#2e0854'],
-      ['#2ecc71', '#145a32'],
-      ['#3498db', '#2c3e50']
-    ];
-    const circles = [];
+    const cubes = [];
+    const numCubes = 25; // Кількість кубів
+    const container = $('body'); // Анімація на весь екран
 
-    for (let i = 0; i < 6; i++) {
-      const circle = document.createElement('div');
-      circle.className = 'circle';
+    for (let i = 0; i < numCubes; i++) {
+      const cube = $('<div class="cube"></div>');
+      const size = Math.random() * 50 + 10; // Розмір від 10 до 60
+      const initialX = Math.random() * window.innerWidth;
+      const initialY = window.innerHeight + size + Math.random() * 100; // Починають знизу
+      const speed = Math.random() * 1.5 + 0.5; // Швидкість підйому
+      const drift = (Math.random() - 0.5) * 0.3; // Горизонтальний дрейф
+      const rotationSpeed = (Math.random() - 0.5) * 0.5; // Швидкість обертання
 
-      const size = Math.random() * 60 + 40;
-      const gradient = colors[i % colors.length];
-      circle.style.background = `radial-gradient(circle, ${gradient[0]}, ${gradient[1]})`;
+      cube.css({
+        width: size + 'px',
+        height: size + 'px',
+        left: initialX + 'px',
+        top: initialY + 'px',
+        opacity: Math.random() * 0.5 + 0.1 // Різна прозорість
+      });
 
-      document.body.appendChild(circle);
+      container.append(cube);
 
-      circles.push({
-        el: circle,
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
-        dx: (Math.random() * 1 + 0.5) * (Math.random() > 0.5 ? 1 : -1),
-        dy: (Math.random() * 1 + 0.5) * (Math.random() > 0.5 ? 1 : -1),
-        baseSize: size,
-        scale: 1,
-        scaleStep: 0.01
+      cubes.push({
+        el: cube,
+        x: initialX,
+        y: initialY,
+        speed: speed,
+        drift: drift,
+        rotation: 0,
+        rotationSpeed: rotationSpeed,
+        initialSize: size
       });
     }
 
-    function animate() {
-      const w = window.innerWidth;
+    function animateCubes() {
       const h = window.innerHeight;
+      const w = window.innerWidth;
 
-      circles.forEach(c => {
-        c.x += c.dx;
-        c.y += c.dy;
+      cubes.forEach(c => {
+        c.y -= c.speed; // Рух вгору
+        c.x += c.drift; // Горизонтальний дрейф
+        c.rotation += c.rotationSpeed; // Обертання
 
-        if (c.x < 0 || c.x + c.baseSize * c.scale > w) c.dx *= -1;
-        if (c.y < 0 || c.y + c.baseSize * c.scale > h) c.dy *= -1;
+        // Повернення куба вниз, якщо він вийшов за верхній край
+        if (c.y < -c.initialSize) {
+          c.y = h + c.initialSize + Math.random() * 50;
+          c.x = Math.random() * w;
+        }
+        // Невелике коригування, якщо виходить за бічні краї
+        if (c.x < -c.initialSize || c.x > w) {
+          c.drift *= -1; // Змінюємо напрямок дрейфу
+        }
 
-        c.scale += c.scaleStep;
-        if (c.scale > 2 || c.scale < 0.5) c.scaleStep *= -1;
-
-        c.el.style.width = c.baseSize + 'px';
-        c.el.style.height = c.baseSize + 'px';
-        c.el.style.left = c.x + 'px';
-        c.el.style.top = c.y + 'px';
-        c.el.style.transform = `scale(${c.scale})`;
+        c.el.css({
+          top: c.y + 'px',
+          left: c.x + 'px',
+          transform: `rotate(${c.rotation}deg)`
+        });
       });
 
-      requestAnimationFrame(animate);
+      requestAnimationFrame(animateCubes);
     }
 
-    animate();
+    animateCubes();
   }
+  /* === Кінець анімації кубів === */
 
-  // ====== Обробка відписки на сторінці підписок ======
+  // ====== ПІДПИСКИ/ВІДПИСКИ ======
   $(document).on('click', '.unsubscribe-btn', function () {
     const card = $(this).closest('.subscription-card');
-    const userId = card.data('subscription-id');
+    const userId = card.data('subscription-id'); // Перевіряємо data-subscription-id
+    if (!userId) return;
 
     if (confirm('Ви дійсно хочете відписатися від цього користувача?')) {
       $.ajax({
         url: `/notes/unsubscribe/${userId}/`,
         type: 'POST',
-        headers: {
-          'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-        },
+        headers: { 'X-CSRFToken': csrfToken }, // Використовуємо отриманий токен
         success: function (response) {
           if (response.success) {
             card.fadeOut(300, function () {
               $(this).remove();
               if ($('.subscription-card').length === 0) {
-                $('.subscriptions-container').html(`
-                <div class="subscriptions-header">
-                    <h1>Мої підписки</h1>
-                    <p>Користувачі, на яких ви підписані</p>
-                </div>
-                <div class="subscription-empty">
-                    <p>У вас поки немає підписок</p>
-                </div>
-                <div class="back-to-profile">
-                    <a href="{% url 'profile' %}" class="btn">← Назад до профілю</a>
-                </div>
-            `);
+                // Оновлюємо контейнер, якщо підписок не залишилось
+                // Переконайся, що URL в href правильний
+                $('#subscriptions-list-container').html(`
+                    <div class="subscription-empty">
+                        <p>У вас поки немає підписок.</p>
+                    </div>
+                `);
               }
             });
+          } else {
+            alert('Не вдалося відписатися.');
           }
         },
         error: function () {
-          alert('Помилка при відписці. Спробуйте пізніше.');
+          alert('Помилка сервера при відписці.');
         }
       });
     }
   });
 
-  $(document).on('click', '.add-to-folder', function (e) {
-    e.preventDefault();
-    const noteId = $(this).data('note-id');
-    $('#hello-modal').data('note-id', noteId);
-    showModal($('#hello-modal'));
-  });
-
-  // Отримання CSRF-токена з мета-тегу
-  function getCSRFToken() {
-    return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-  }
-
-  // Логіка для переміщення нотатки у вибрану папку
-  $('#move-note-to-folder').click(function () {
-    const noteId = $('#hello-modal').data('note-id');
-    const folderId = $('#folder-select').val();
+  // Обробка запитів на підписку (Прийняти/Відхилити)
+  $(document).on('click', '.request-actions .btn', function () {
+    const button = $(this);
+    const card = button.closest('.request-card');
+    const requestId = card.data('request-id');
+    const action = button.hasClass('accept') ? 'accept' : 'reject'; // Визначаємо дію за класом кнопки
+    if (!requestId) return;
 
     $.ajax({
+      url: `/notes/handle_subscription_request/${requestId}/`,
       type: 'POST',
-      url: '/notes/move_note_to_folder/',
-      data: {
-        note_id: noteId,
-        folder_id: folderId
-      },
-      headers: {
-        'X-CSRFToken': getCSRFToken()
-      },
-      success: function () {
-        hideModal($('#hello-modal'));
-        alert('Нотатку переміщено у папку.');
-        location.reload();
+      data: { action: action },
+      headers: { 'X-CSRFToken': csrfToken },
+      success: function (response) {
+        if (response.success) {
+          card.fadeOut(300, function () { $(this).remove(); });
+          // Можна додати повідомлення
+        } else {
+          alert('Не вдалося обробити запит: ' + (response.error || ''));
+        }
       },
       error: function () {
-        alert('Помилка при переміщенні нотатки.');
+        alert('Помилка сервера при обробці запиту.');
       }
     });
   });
 
-  $('.close-modal').click(function () {
-    if ($(this).closest('#hello-modal').length) {
-      hideModal($('#hello-modal'));
-    }
-  });
-
-  // Відкриття модального вікна при натисканні на кнопку "Додати у папку"
-  $('.add-to-folder').click(function (e) {
-    e.preventDefault();
-    $('#hello-modal').show();
-  });
-
-  // Закриття модального вікна
-  $('.close-modal').click(function () {
-    $('#hello-modal').hide();
-  });
-
-  const noteId = $('#add-to-folder-modal').data('note-id');
-
   // ====== ПОШУК НОТАТОК ======
   function performSearch() {
     const query = $('#search-input').val().trim();
-    if (query.length < 2) { // Шукаємо, якщо більше 1 символу
-      // Можна додати повідомлення, якщо треба
+    if (query.length < 2) { // Мінімальна довжина запиту
+      // Можна додати повідомлення або нічого не робити
       return;
     }
+    const searchButton = $('#search-button');
+    const originalButtonText = searchButton.text();
+    searchButton.text('Пошук...').prop('disabled', true);
 
     $.ajax({
       url: '/notes/search/',
@@ -511,26 +647,34 @@ $(document).ready(function () {
       data: { q: query },
       success: function (response) {
         const resultsList = $('#search-results-list');
-        resultsList.empty(); // Очищаємо попередні результати
+        resultsList.empty(); // Очищаємо перед додаванням нових
 
         if (response.notes && response.notes.length > 0) {
           response.notes.forEach(function (note) {
-            // Створюємо елемент для кожної знайденої нотатки
+            // Генеруємо HTML для результату пошуку
+            // Переконайся, що note.url, note.title, note.text_snippet існують
             const noteElement = `
-              <div class="search-result-item">
-                <h3><a href="${note.url}">${note.title}</a></h3>
-                <p>${note.text_snippet}</p>
+              <div class="search-result-item" style="padding: 15px; border-bottom: 1px solid #495057;">
+                <h3 style="margin-bottom: 5px; font-size: 1.1rem;">
+                    <a href="${note.url || '#'}" style="color: #e9ecef;">${note.title || 'Без назви'}</a>
+                </h3>
+                <p style="color: #adb5bd; font-size: 0.9rem; margin: 0;">${note.text_snippet || ''}</p>
               </div>
             `;
             resultsList.append(noteElement);
           });
+          // Додаємо стилі для останнього елемента
+          resultsList.find('.search-result-item:last-child').css('border-bottom', 'none');
         } else {
-          resultsList.html('<p>Нічого не знайдено.</p>');
+          resultsList.html('<p style="text-align: center; padding: 20px; color: #adb5bd;">Нічого не знайдено.</p>');
         }
-        showModal($('#search-results-modal')); // Показуємо модалку
+        showModal($('#search-results-modal')); // Показуємо модалку з результатами
       },
-      error: function () {
-        alert('Помилка під час пошуку.');
+      error: function (xhr) {
+        alert('Помилка під час пошуку: ' + xhr.statusText);
+      },
+      complete: function () {
+        searchButton.text(originalButtonText).prop('disabled', false);
       }
     });
   }
@@ -542,38 +686,20 @@ $(document).ready(function () {
 
   // Обробник для натискання Enter у полі пошуку
   $('#search-input').keypress(function (e) {
-    if (e.which == 13) { // 13 - код клавіші Enter
+    if (e.which == 13) { // Код клавіші Enter
+      e.preventDefault(); // Запобігаємо стандартній дії (якщо поле в формі)
       performSearch();
-      return false; // Запобігаємо стандартній дії форми (якщо вона є)
     }
   });
 
-  // Закриття модального вікна пошуку
-  $(document).on('click', '#search-results-modal .close-modal', function () {
-    hideModal($('#search-results-modal'));
+  // ====== ЗМІНА ФОТО ПРОФІЛЮ ======
+  // Відкриття вікна вибору файлу при кліку на фото/іконку
+  $('.profile-photo-label').click(function () {
+    $('#photo-upload-input').click();
   });
-
-  // Закриття модалки при кліку поза нею (покращено)
-  $(document).mouseup(function (e) {
-    $('.modal').each(function () {
-      const modal = $(this);
-      const modalContent = modal.find('.modal-content');
-      // Перевіряємо, чи клік був поза контентом модалки, і чи модалка видима
-      if (!modalContent.is(e.target) && modalContent.has(e.target).length === 0 && modal.is(':visible')) {
-        // Закриваємо тільки якщо клік не по кнопці, яка відкриває цю ж модалку
-        // (щоб уникнути миттєвого закриття при відкритті)
-        // Це проста перевірка, може потребувати доопрацювання для складних випадків
-        if (!$(e.target).closest('[data-toggle="modal"]').length) {
-          hideModal(modal);
-        }
-      }
-    });
-  });
-
-  // ====== ЗМІНА ФОТО ПРОФІЛЮ ПО КЛІКУ ======
+  // Автоматична відправка форми при виборі файлу
   $('#photo-upload-input').change(function () {
     if (this.files && this.files[0]) {
-      // Автоматично відправляємо форму при виборі файлу
       $('#photo-upload-form').submit();
     }
   });
