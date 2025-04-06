@@ -7,6 +7,9 @@ from .models import Note, Folder, Subscription, Profile
 from .forms import NoteForm, UkrainianRegisterForm, FolderForm
 from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
+import logging
+
+logger = logging.getLogger(__name__)
 
 def main_home(request):
     return render(request, 'notes/main_home.html')
@@ -26,7 +29,7 @@ def note_list(request):
 
 @login_required
 def add_note(request):
-    if request.method == 'POST' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
+    if request.method == 'POST':
         form = NoteForm(request.POST)
         if form.is_valid():
             note = form.save(commit=False)
@@ -93,6 +96,7 @@ def delete_note(request, pk):
 @login_required
 def move_note_to_folder(request):
     if request.method == 'POST':
+        logger.warning(f"Got request to move_note_to_folder: {request.method} {request.POST}")
         note_id = request.POST.get('note_id')
         folder_id = request.POST.get('folder_id')
         note = get_object_or_404(Note, pk=note_id, user=request.user)

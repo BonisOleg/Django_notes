@@ -15,8 +15,27 @@
   <div class="actions">
     <a href="{% url 'edit_note' note.pk %}">Редагувати</a> |
     <a href="{% url 'delete_note' note.pk %}">Видалити</a>
+    {% if not note.folder %}
+    | <a href="#" class="add-to-folder" data-note-id="{{ note.pk }}">Додати у папку</a>
+    {% endif %}
     {% if note.folder %}
     | <a href="#" class="return-from-folder" data-note-id="{{ note.pk }}">Повернути з папки</a>
     {% endif %}
+  </div>
+</div>
+
+<!-- Модальне вікно для вибору папки -->
+<div id="hello-modal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h2>Виберіть папку</h2>
+    <select id="folder-select">
+      {% for folder in folders %}
+      <option value="{{ folder.id }}">{{ folder.name }}</option>
+      {% endfor %}
+    </select>
+    <div class="modal-buttons">
+      <button class="btn primary" id="move-note-to-folder">Перенести</button>
+      <button class="btn secondary close-modal">Скасувати</button>
+    </div>
   </div>
 </div>

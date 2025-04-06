@@ -37,5 +37,20 @@
     </div>
 </div>
 
+<div id="add-to-folder-modal" class="modal" style="display:none;">
+    <div class="modal-content">
+        <h2>Додати у папку</h2>
+        <select id="folder-select">
+            {% for folder in folders %}
+            <option value="{{ folder.id }}">{{ folder.name }}</option>
+            {% endfor %}
+        </select>
+        <div class="modal-buttons">
+            <button class="btn primary" id="move-note-to-folder">Перенести</button>
+            <button class="btn secondary close-modal">Скасувати</button>
+        </div>
+    </div>
+</div>
+
 <script src="{% static 'notes/scripts.js' %}"></script>
 {% endblock %}
