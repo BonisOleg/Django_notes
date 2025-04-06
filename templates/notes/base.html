@@ -41,28 +41,56 @@
 
   <!-- Навігаційне меню -->
   <header>
-    <nav>
-      <ul class="menu">
-        <li><a href="{% url 'main_home' %}">Головна</a></li>
-        <li><a href="{% url 'note_list' %}">Додати нотатку</a></li>
-
-        {% if user.is_authenticated %}
-        <li><a href="{% url 'profile' %}">Особистий кабінет</a></li>
-        <li><a href="{% url 'trash' %}">Корзина</a></li>
-        <li>
-          <form action="{% url 'logout' %}" method="post" style="display: inline;">
-            {% csrf_token %}
-            <button type="submit" class="menu-btn-link">Вийти</button>
-          </form>
-        </li>
-        {% else %}
-        <li><a href="{% url 'auth_choice' %}">Реєстрація/вхід</a></li>
-        {% endif %}
-      </ul>
-    </nav>
+    <div class="header-left">
+      {% if user.is_authenticated %}
+      <img src="{{ user.profile.photo.url|default:'/static/notes/default-avatar.png' }}" alt="Фото"
+        class="header-avatar">
+      {% endif %}
+      <nav>
+        <ul class="menu">
+          <li><a href="{% url 'main_home' %}">Головна</a></li>
+          <li><a href="{% url 'note_list' %}">Мої нотатки</a></li>
+          {% if user.is_authenticated %}
+          <li><a href="{% url 'profile' %}">Особистий кабінет</a></li>
+          <li><a href="{% url 'trash' %}">Корзина</a></li>
+          <li>
+            <form action="{% url 'logout' %}" method="post" style="display: inline;">
+              {% csrf_token %}
+              <button type="submit" class="menu-btn-link">Вийти</button>
+            </form>
+          </li>
+          {% else %}
+          <li><a href="{% url 'auth_choice' %}">Реєстрація/вхід</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+    <div class="header-right">
+      {% if user.is_authenticated %}
+      <span class="user-greeting">Вітаю, {{ user.username }}!</span>
+      {% endif %}
+      <!-- Поле пошуку -->
+      <div class="search-container">
+        <input type="text" id="search-input" placeholder="Пошук нотаток...">
+        <button id="search-button" class="btn small">Знайти</button>
+      </div>
+    </div>
   </header>
 
   {% block content %}{% endblock %}
+
+  <!-- Модальне вікно для результатів пошуку -->
+  <div id="search-results-modal" class="modal" style="display:none;">
+    <div class="modal-content large">
+      <h2>Результати пошуку</h2>
+      <div id="search-results-list">
+        <!-- Результати будуть вставлені сюди -->
+      </div>
+      <div class="modal-buttons">
+        <button class="btn secondary close-modal">Закрити</button>
+      </div>
+    </div>
+  </div>
 
 </body>
 

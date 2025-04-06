@@ -483,4 +483,85 @@ $(document).ready(function () {
   });
 
   const noteId = $('#add-to-folder-modal').data('note-id');
+
+  // ====== ПОШУК НОТАТОК ======
+  function performSearch() {
+    const query = $('#search-input').val().trim();
+    if (query.length < 2) { // Шукаємо, якщо більше 1 символу
+      // Можна додати повідомлення, якщо треба
+      return;
+    }
+
+    $.ajax({
+      url: '/notes/search/',
+      type: 'GET',
+      data: { q: query },
+      success: function (response) {
+        const resultsList = $('#search-results-list');
+        resultsList.empty(); // Очищаємо попередні результати
+
+        if (response.notes && response.notes.length > 0) {
+          response.notes.forEach(function (note) {
+            // Створюємо елемент для кожної знайденої нотатки
+            const noteElement = `
+              <div class="search-result-item">
+                <h3><a href="${note.url}">${note.title}</a></h3>
+                <p>${note.text_snippet}</p>
+              </div>
+            `;
+            resultsList.append(noteElement);
+          });
+        } else {
+          resultsList.html('<p>Нічого не знайдено.</p>');
+        }
+        showModal($('#search-results-modal')); // Показуємо модалку
+      },
+      error: function () {
+        alert('Помилка під час пошуку.');
+      }
+    });
+  }
+
+  // Обробник для кнопки пошуку
+  $('#search-button').click(function () {
+    performSearch();
+  });
+
+  // Обробник для натискання Enter у полі пошуку
+  $('#search-input').keypress(function (e) {
+    if (e.which == 13) { // 13 - код клавіші Enter
+      performSearch();
+      return false; // Запобігаємо стандартній дії форми (якщо вона є)
+    }
+  });
+
+  // Закриття модального вікна пошуку
+  $(document).on('click', '#search-results-modal .close-modal', function () {
+    hideModal($('#search-results-modal'));
+  });
+
+  // Закриття модалки при кліку поза нею (покращено)
+  $(document).mouseup(function (e) {
+    $('.modal').each(function () {
+      const modal = $(this);
+      const modalContent = modal.find('.modal-content');
+      // Перевіряємо, чи клік був поза контентом модалки, і чи модалка видима
+      if (!modalContent.is(e.target) && modalContent.has(e.target).length === 0 && modal.is(':visible')) {
+        // Закриваємо тільки якщо клік не по кнопці, яка відкриває цю ж модалку
+        // (щоб уникнути миттєвого закриття при відкритті)
+        // Це проста перевірка, може потребувати доопрацювання для складних випадків
+        if (!$(e.target).closest('[data-toggle="modal"]').length) {
+          hideModal(modal);
+        }
+      }
+    });
+  });
+
+  // ====== ЗМІНА ФОТО ПРОФІЛЮ ПО КЛІКУ ======
+  $('#photo-upload-input').change(function () {
+    if (this.files && this.files[0]) {
+      // Автоматично відправляємо форму при виборі файлу
+      $('#photo-upload-form').submit();
+    }
+  });
 });

@@ -40,4 +40,7 @@ urlpatterns = [
     path('cancel_subscription/<int:subscription_id>/', views.cancel_subscription, name='cancel_subscription'),
     path('user_notes/<int:user_id>/', views.view_user_notes, name='view_user_notes'),
     path('unsubscribe/<int:user_id>/', views.unsubscribe, name='unsubscribe'),
+
+    # === ПОШУК ===
+    path('search/', views.search_notes, name='search_notes'),
 ]

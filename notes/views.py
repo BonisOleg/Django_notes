@@ -8,6 +8,8 @@ from .forms import NoteForm, UkrainianRegisterForm, FolderForm
 from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
 import logging
+from django.db.models import Q
+from django.urls import reverse
 
 logger = logging.getLogger(__name__)
 
@@ -257,3 +259,24 @@ def unsubscribe(request, user_id):
         subscription.delete()
         return JsonResponse({'success': True})
     return JsonResponse({'success': False})
+
+@login_required
+def search_notes(request):
+    query = request.GET.get('q', '')
+    notes = []
+    if query:
+        notes = Note.objects.filter(
+            Q(user=request.user) &
+            Q(is_deleted=False) &
+            (Q(title__icontains=query) | Q(text__icontains=query))
+        ).order_by('-created_at')
+    
+    # Можна повернути просто дані або відрендерений HTML
+    notes_data = [{
+        'id': note.id,
+        'title': note.title,
+        'text_snippet': (note.text[:100] + '...') if len(note.text) > 100 else note.text,
+        'url': request.build_absolute_uri(reverse('edit_note', args=[note.pk])) # Або інший URL, якщо треба
+    } for note in notes]
+    
+    return JsonResponse({'notes': notes_data})

@@ -2,14 +2,27 @@
 {% load static %}
 
 {% block content %}
-<div class="edit-container">
+<div class="container">
   <h1>Редагування нотатки</h1>
-  <form method="POST">
+  <form method="POST" class="note-form edit-note-form">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Зберегти зміни</button>
+    <div class="field-group">
+      <label for="id_title">Заголовок</label>
+      {{ form.title }}
+    </div>
+    <div class="field-group">
+      <label for="id_note_footer">Примітка</label>
+      {{ form.note_footer }}
+    </div>
+    <div class="field-group" style="grid-column: span 2;">
+      <label for="id_text">Текст</label>
+      {{ form.text }}
+    </div>
+    <div class="form-actions" style="grid-column: span 2;">
+      <button type="submit" class="btn">Зберегти зміни</button>
+      <a href="{% url 'note_list' %}" class="btn secondary">Скасувати</a>
+    </div>
   </form>
-  <a class="back-link" href="{% url 'note_list' %}">Повернутися до списку нотаток</a>
 </div>
 <script src="{% static 'notes/scripts.js' %}"></script>
 {% endblock %}
