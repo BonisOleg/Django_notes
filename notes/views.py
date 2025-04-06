@@ -10,6 +10,8 @@ from django.core.files.storage import FileSystemStorage
 import logging
 from django.db.models import Q
 from django.urls import reverse
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger(__name__)
 
@@ -135,7 +137,6 @@ def trash(request):
     notes = Note.objects.filter(user=request.user, is_deleted=True).order_by('-created_at')
     return render(request, 'notes/trash.html', {'notes': notes})
 
-@csrf_exempt
 @login_required
 def restore_note(request, pk):
     if request.method == 'POST':
@@ -144,7 +145,6 @@ def restore_note(request, pk):
         note.save()
         return JsonResponse({'success': True})
 
-@csrf_exempt
 @login_required
 def delete_forever(request, pk):
     if request.method == 'POST':
@@ -152,14 +152,12 @@ def delete_forever(request, pk):
         note.delete()
         return JsonResponse({'success': True})
 
-@csrf_exempt
 @login_required
 def restore_all(request):
     if request.method == 'POST':
         Note.objects.filter(user=request.user, is_deleted=True).update(is_deleted=False)
         return JsonResponse({'success': True})
 
-@csrf_exempt
 @login_required
 def delete_all(request):
     if request.method == 'POST':
@@ -183,14 +181,39 @@ def register(request):
 def profile(request):
     return render(request, 'notes/profile.html')
 
+# Додамо валідатор розміру файлу
+def validate_image_size(value):
+    limit = 2 * 1024 * 1024 # 2MB
+    if value.size > limit:
+        raise ValidationError(_('Файл занадто великий. Розмір не повинен перевищувати 2MB.'))
+
+# Додамо валідатор типу файлу (простий, за розширенням)
+def validate_image_extension(value):
+    import os
+    ext = os.path.splitext(value.name)[1]  # Отримуємо розширення
+    valid_extensions = ['.jpg', '.jpeg', '.png', '.gif']
+    if not ext.lower() in valid_extensions:
+        raise ValidationError(_('Неприпустимий тип файлу. Дозволено лише JPG, PNG, GIF.'))
+
 @login_required
 def upload_photo(request):
-    if request.method == 'POST' and request.FILES['photo']:
+    if request.method == 'POST' and request.FILES.get('photo'):
         photo = request.FILES['photo']
-        profile, created = Profile.objects.get_or_create(user=request.user)
-        profile.photo = photo
-        profile.save()
-        return render(request, 'notes/profile.html', {'uploaded_file_url': profile.photo.url})
+        try:
+            # Валідація
+            validate_image_extension(photo)
+            validate_image_size(photo)
+
+            profile, created = Profile.objects.get_or_create(user=request.user)
+            profile.photo = photo
+            profile.save()
+            # Повертаємо успіх або редірект
+            return redirect('profile') # Редірект на профіль після успішного завантаження
+        except ValidationError as e:
+            # Обробка помилки валідації - можна передати повідомлення в шаблон
+            # Наприклад, через messages framework або просто в контекст
+            return render(request, 'notes/profile.html', {'upload_error': e.messages[0]})
+    # Якщо GET або немає файлу 'photo'
     return redirect('profile')
 
 @login_required

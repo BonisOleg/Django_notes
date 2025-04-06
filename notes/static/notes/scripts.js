@@ -85,19 +85,25 @@ $(document).ready(function () {
     e.originalEvent.dataTransfer.setData('note-id', draggedNote.data('id'));
 
     setTimeout(() => {
-      draggedNote.css({
-        transform: 'scale(0.33)',
-        opacity: '0.7'
-      });
+      if (draggedNote) {
+        draggedNote.css({
+          transform: 'scale(0.33)',
+          opacity: '0.7'
+        });
+      }
     }, 0);
   });
 
   $(document).on('dragend', '.note-block', function () {
-    draggedNote.removeClass('dragging');
-    draggedNote.css({
-      transform: 'scale(1)',
-      opacity: '1'
-    });
+    const currentNote = $(this);
+    if (currentNote && currentNote.hasClass('dragging')) {
+      currentNote.removeClass('dragging');
+      currentNote.css({
+        transform: 'scale(1)',
+        opacity: '1'
+      });
+    }
+    draggedNote = null;
   });
 
   $(document).on('dragover', '.folder-block', function (e) {
@@ -114,6 +120,7 @@ $(document).ready(function () {
     const folderId = $(this).data('folder-id');
     const noteId = e.originalEvent.dataTransfer.getData('note-id');
     $(this).removeClass('drag-over');
+    const originalNote = $(`.note-block[data-id="${noteId}"]`);
 
     $.ajax({
       type: 'POST',
@@ -123,12 +130,18 @@ $(document).ready(function () {
         folder_id: folderId
       },
       success: function () {
-        $(`.note-block[data-id="${noteId}"]`).fadeOut(300, function () {
-          $(this).remove();
-        });
+        if (originalNote.length) {
+          originalNote.fadeOut(300, function () {
+            $(this).remove();
+          });
+        }
       },
       error: function () {
         alert('Не вдалося перемістити нотатку в папку.');
+        if (originalNote.length) {
+          originalNote.removeClass('dragging');
+          originalNote.css({ transform: 'scale(1)', opacity: '1' });
+        }
       }
     });
   });
@@ -319,7 +332,7 @@ $(document).ready(function () {
   });
 
   // ====== Розгортання тексту нотаток ======
-  $('.expand-btn').click(function () {
+  $(document).on('click', '.expand-btn', function () {
     const content = $(this).siblings('.note-content');
     content.toggleClass('expanded');
     $(this).text(content.hasClass('expanded') ? 'Показати менше' : 'Показати більше');
